@@ -3,3 +3,4 @@ node_modules
 .envi
 rtehinkdb_data
 dist
+npm-debug.log
