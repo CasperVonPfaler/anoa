@@ -1,0 +1,29 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  background: #fafafa;
+}
+
+button {
+  font-size: 1.2rem;
+  background: #fff;  
+  color: #616161;
+  border: 1px solid #616161;
+  padding: .5rem 1rem;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+}
+button:focus {
+  outline: none;
+}
+button:hover {
+  color: #0277BD;
+}
+button:active {
+  color: #0277BD;
+}
+
+/* DOWNLOAD THEse and bundle them */
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
