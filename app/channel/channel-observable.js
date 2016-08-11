@@ -14,7 +14,6 @@ module.exports = function channelObservable(connection, channelID) {
     .run(connection)
     .then(cursor => {
       cursor.each((err, snapshot) => {
-        console.log(snapshot);
         if (err) observer.onError(err);
         else if (snapshot.type !== 'state') {
           if (snapshot.old_val === null) {

@@ -9,19 +9,20 @@ const questionMiddleware = require('./app/question/question-middleware');
 const answerMiddleware = require('./app/answer/answer-middleware');
 
 // express use
-app.use(express.static(`${__dirname}/dist`));
 app.use(bodyParser.json());
+app.use(express.static('public/dist'));
 
 // express post
-app.post('/api/channelInsert', channelMiddleware.insert);
-app.post('/api/questionInsert', questionMiddleware.insert);
-app.post('/api/answerInsert', answerMiddleware.insert);
+app.post('/app/channelInsert', channelMiddleware.insert);
+app.post('/app/questionInsert', questionMiddleware.insert);
+app.post('/app/answerInsert', answerMiddleware.insert);
 
 // express get
-app.get('/api/channelGet/:id', channelMiddleware.fetch);
-app.get('/api/channelJoin/:id', channelMiddleware.join);
+app.get('/app/channelGet/:id', channelMiddleware.fetch);
+app.get('/app/channelJoin/:id', channelMiddleware.join);
+
 app.get('*', (req, res, next) => {
-  if (req.accepts('html')) res.sendFile(`${__dirname}/index.html`);
+  if (req.accepts('html')) res.sendFile(`${__dirname}/public/index.html`);
   else next();
 });
 
@@ -32,6 +33,6 @@ io.on('connection', (socket) => {
 });
 
 // start the app
-server.listen(process.env.PORT, () => {
-  console.log(`server at localhost://${process.env.PORT}`);
+server.listen(5000, () => {
+  console.log('app at localhost://5000');
 });

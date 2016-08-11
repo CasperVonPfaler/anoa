@@ -10,11 +10,13 @@ module.exports = {
 };
 
 /**
+ * Validates recaptcha and if successfull inserts the channel into the databse
+ * responds to the channel with the id of the newly created channel
+ *
  * @Param {object} express.js request object
  * @Param {object} express.js response object
  */
 function insert(req, res) {
-  // validate recaptcha
   request
   .post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_API_KEY}&response=${req.body.captcha}`)
   .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -24,7 +26,7 @@ function insert(req, res) {
     } else {
       r.connect({})
       .then((connection) => {
-        channel.insert(connection, req.body.name)
+        channel.insert(connection, req.body.name, req.headers.host)
         .then((channelId) => res.send({ id: channelId }))
         .catch(() => res.status(403).send({ err: 'channel-insert-error' }));
       });
@@ -33,6 +35,8 @@ function insert(req, res) {
 }
 
 /**
+ * Responds to the client with a snapshot of the channel
+ *
  * @Param {object} express.js request object
  * @Param {object} express.js response object
  */
@@ -50,12 +54,14 @@ function fetch(req, res) {
 }
 
 /**
+ * Transforms a short id to a long id and sends it back to the client
+ *
  * @Param {object} express.js request object
  * @Param {object} express.js response object
  */
 function join(req, res) {
   if (req.params.id) {
-    channel.join(req.params.id)
+    channel.join(req.params.id, req.headers.host)
     .then((longID) => {
       res.send({
         id: longID,
@@ -67,6 +73,10 @@ function join(req, res) {
   }
 }
 
+/**
+ * Subscribes to a channel and sends changes to the client when the channel data
+ * changes. The emitted changes are always a channel object
+ */
 function subscribe(socket) {
   return function channelSubscriptionEvent(data) {
     r.connect({ id: data.id })

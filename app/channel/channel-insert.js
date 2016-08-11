@@ -11,14 +11,14 @@ const Promise = require('bluebird');
  * @Param {string} name for the new channel
  * @Return {object} promise that resolves to the id of the new channel
  */
-module.exports = function insertChannel(connection, channelName) {
+module.exports = function insertChannel(connection, channelName, requestHostDomain) {
   return new Promise((resolve, reject) => {
-    const channelId = uuid.v1().replace(/-/g, '_');
+    const channelId = uuid.v1().replace(/-/g, '_'); // Rethinkdb does not like '-'
 
     request
     .post(`https://www.googleapis.com/urlshortener/v1/url?key=${process.env.LINK_SHORTENER_API_KEY}`)
     .send({
-      longUrl: `http://localhost:5000/channel/${channelId}`,
+      longUrl: `http://${requestHostDomain}/channel/${channelId}`,
     })
     .end((err, res) => {
       if (err) reject(err);

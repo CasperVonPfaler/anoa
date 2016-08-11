@@ -1,32 +1,34 @@
 {
   "name": "anoa",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "anonymous questions made easy",
   "main": "server.js",
   "scripts": {
-    "start": "npm run build && npm run server",
-    "build:watch": "webpack --progress --colors --watch",
-    "build": "webpack --progress --colors --optimize-minimize",
-    "server": "node -r dotenv/config server.js dotenv_config_path=./.envi",
-    "dev": "npm run server & npm run build:watch"
+    "start": "npm run web-build && npm run app",
+    "app": "node -r dotenv/config app.js dotenv_config_path=./.envi",
+    "dev": "rethinkdb & npm run app & npm run web-build:watch",
+    "web-build": "webpack --optimize-minimize",
+    "web-build:watch": "webpack --progress --colors --watch"
   },
   "author": "Casper von pfaler",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
+    "classnames": "^2.2.5",
     "express": "^4.13.4",
     "node-uuid": "^1.4.7",
+    "rethinkdb": "^2.3.2",
+    "rx": "^4.1.0",
     "react": "0.14.6",
     "react-dom": "0.14.6",
     "react-router": "^2.5.2",
-    "rethinkdb": "^2.3.2",
-    "rx": "^4.1.0",
-    "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
+    "socket.io": "^1.4.8",
     "superagent": "^2.0.0"
   },
   "devDependencies": {
+    "dotenv": "^2.0.0",
     "babel": "^6.5.2",
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",
@@ -34,24 +36,9 @@
     "babel-preset-react": "^6.0.15",
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
-    "dotenv": "^2.0.0",
-    "eslint": "^2.13.1",
-    "eslint-config-airbnb": "^9.0.1",
-    "eslint-config-airbnb-base": "^4.0.0",
-    "eslint-plugin-import": "^1.10.3",
-    "eslint-plugin-jsx-a11y": "^1.5.5",
-    "eslint-plugin-react": "^5.2.2",
     "html-loader": "^0.4.3",
     "json-loader": "^0.5.4",
-    "loadtest": "*",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0",
-      "react"
-    ]
   }
 }

@@ -1,16 +1,15 @@
-// Load css styles for components
-require('./util/util.css');
-require('./login/login.css');
-require('./channel/channel.css');
-require('./channel/question/question.css');
-require('./channel/question/answer/answer.css');
+require('./common/common.css');
+require('./components/login/login.css');
+require('./components/channel/channel.css');
+require('./components/channel/question/question.css');
+require('./components/channel/question/answer/answer.css');
 
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 
-import Channel from './channel/channel';
-import Login from './login/login';
+import Channel from './components/channel/channel';
+import Login from './components/login/login';
 
 function Root() {
   return (

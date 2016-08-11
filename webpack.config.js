@@ -1,7 +1,7 @@
 module.exports = {
-  entry: './public/public.js',
+  entry: './public/src/public.js',
   output: {
-    path: './dist',
+    path: './public/dist',
     filename: 'index.js',
   },
   module: {

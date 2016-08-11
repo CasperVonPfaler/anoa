@@ -1,5 +1,6 @@
 module.exports = {
   timeSince,
+  isFunction,
 };
 
 function timeSince(date) {
@@ -30,4 +31,12 @@ function timeSince(date) {
     return `${interval} minutes ago`;
   }
   return `${Math.floor(seconds)} seconds ago`;
+}
+
+/**
+ * @see http://stackoverflow.com/questions/5999998/how-can-i-check-if-a-javascript-variable-is-function-type
+ */
+function isFunction(functionToCheck) {
+  var getType = {};
+  return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }

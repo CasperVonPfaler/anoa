@@ -1,14 +1,11 @@
 import React from 'react';
 import request from 'superagent';
 import io from 'socket.io-client';
+import classNames from 'classnames';
 
 import Question from './question/question';
 import Answer from './question/answer/answer';
-import util from '../util/util';
-
-
-// ADDING A NEW ANSWER IN LIVE MODE DOES NOT SHOW UP STEAIGHT AWAY IN DIFFERENT BROWSER
-// CHIILD COMPONENT WITH THE ANSWERS SHOULD ALSO RE RENDER --> NEED TO CHANGE STATE FOR IT?
+import util from '../../common/util';
 
 export default class Channel extends React.Component {
   constructor(props) {
@@ -32,6 +29,10 @@ export default class Channel extends React.Component {
   }
 
   componentDidMount() {
+    this.fetchChannel();
+  }
+
+  fetchChannel(callback) {
     request
     .get(`/api/channelGet/${this.state.id}`)
     .end((err, res) => {
@@ -43,10 +44,10 @@ export default class Channel extends React.Component {
           questions: res.body.questions.length > 0 ? res.body.questions : [],
           shortID: res.body.shortID,
         });
+
+        if (util.isFunction(callback)) callback(); 
       }
     });
-
-    this.toggleLive();
   }
 
   appendNewQuestion(question) {
@@ -106,7 +107,7 @@ export default class Channel extends React.Component {
         } else {
           if (!this.state.socket) this.appendNewQuestion(res.body);
           this.setState({
-            questionInputNotification: 'Question stored',
+            questionInputNotification: 'Success.',
           });
         }
       });
@@ -114,20 +115,32 @@ export default class Channel extends React.Component {
   }
 
   toggleLive() {
-    this.setState({
-      socket: io.connect('http://localhost:5000'), // Change this to not localhost
-    }, () => {
-      this.state.socket.on('connectionSuccess', () => {
-        this.state.socket.emit('channelSubscribe', { id: this.state.id });
-        this.state.socket.on('newQuestion', (changes) => {
-          this.appendNewQuestion(changes);
+    if (!this.state.socket) {
+      this.fetchChannel(() => {
+        this.setState({
+          socket: io(),
+        }, () => {
+          this.state.socket.on('connectionSuccess', () => {
+            this.state.socket.emit('channelSubscribe', { id: this.state.id });
+            this.state.socket.on('newQuestion', (changes) => {
+              this.appendNewQuestion(changes);
+            });
+            this.state.socket.on('newAnswer', (changes) => {
+              this.refs[changes.id].appendNewAnswer(changes.answers[changes.answers.length - 1]);
+            });
+          });
         });
-        this.state.socket.on('newAnswer', (changes) => {
-          console.log(changes);
-          this.refs[changes.id].appendNewAnswer(changes.answers[changes.answers.length - 1]);
-        });
+      });   
+    } else {
+      this.state.socket.disconnect();
+      this.setState({
+        socket: undefined,
       });
-    });
+    }
+  }
+
+  registerQuestionServiceWorker() {
+
   }
 
   render() {
@@ -136,9 +149,11 @@ export default class Channel extends React.Component {
         <div className="channel__top-bar">
           <h2 className="channel__top-bar__title">{this.state.title}</h2>
           <span className="channel__top-bar__id"> id: {this.state.shortID}</span>
+          <span className="channel__top-bar__live-toggle-label"> Live: </span> <button className={classNames('channel__top-bar__live-toggle', { 'channel__top-bar__live-toggle--active': this.state.socket })} onClick={this.toggleLive} ></button>
+          <a className="channel__create-or-join-new" href="/">Create or join another channel</a>
         </div>
         <div className="channel__new-question">
-          <textarea className="channel__new-question__textarea" onChange={this.questionInputWatcher} value={this.state.questionInput} placeholder="Your question goes here."></textarea>
+          <textarea className="channel__new-question__textarea" onChange={this.questionInputWatcher} value={this.state.questionInput} placeholder="Your question."></textarea>
           <button className="channel__new-question__button" onClick={this.storeQuestion}>Ask question</button>
           <div className="channel__new-question__error">{this.state.questionInputNotification}</div>
         </div>

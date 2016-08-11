@@ -23,14 +23,16 @@ export default class Login extends React.Component {
   createChannel(evt) {
     evt.preventDefault();
 
-    if (!this.state.input || !grecaptcha.getResponse()) { //eslint-disable-line
-      this.setState({ error: 'Error' });
+    if (!this.state.input) { 
+      this.setState({ error: 'Please enter a name.' });
+    } else if (!grecaptcha.getResponse()) {
+      this.setState({ error: 'Please make sure that you are not a robot.' });
     } else {
       request
       .post('/api/channelInsert/')
       .send({
         name: this.state.input,
-        captcha: grecaptcha.getResponse(), // eslint-disable-line 
+        captcha: grecaptcha.getResponse(),
       })
       .end((err, res) => {
         if (err) this.setState({ error: 'Something went wrong, please try again' });
@@ -60,11 +62,12 @@ export default class Login extends React.Component {
         <div className="login-channel">
           <h2 className="login-channel__title">ANOA</h2>
           <form className="login-channel__form">
-            <input type="text" className="login-channel__form-input" placeholder="< ... >" onChange={this.inputWatcher}></input>
-            <button type="submit" className="login-channel__form-button login-channel__form-button-create" onClick={this.createChannel} >Create channel</button>
+            <input type="text" className="login-channel__form-input" placeholder="channel name or id" onChange={this.inputWatcher}></input>
+            <button type="submit" className="login-channel__form-button login-channel__form-button--create" onClick={this.createChannel} >Create channel</button>
             <button type="submit" className="login-channel__form-button login-channel__form-button-join" onClick={this.joinChannel} >Join channel</button>
             <div className="login-channel__error-notification">{this.state.error}</div>
-            <div className="g-recaptcha" data-sitekey="6Ld7iSUTAAAAAP94hCGVPTxE2JE1lAsHmV6Y56ON"></div>
+            <div className="g-recaptcha" data-sitekey="6Ld7iSUTAAAAAP94hCGVPTxE2JE1lAsHmV6Y56ON" async defer></div>
+            <div className="login-channel__captcha-label">Only needed when creating a channel</div>
           </form>
         </div>
       </div>
