@@ -1,6 +1,7 @@
-const channel = require('./channel');
 const r = require('rethinkdb');
-const request = require('superagent');
+
+const channel = require('./channel');
+const util = require('../util/util');
 
 module.exports = {
   insert,
@@ -17,21 +18,19 @@ module.exports = {
  * @Param {object} express.js response object
  */
 function insert(req, res) {
-  request
-  .post(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_API_KEY}&response=${req.body.captcha}`)
-  .set('Content-Type', 'application/x-www-form-urlencoded')
-  .end((err1, res1) => {
-    if (!res1.body.success) {
-      res.status(403).send({ err: 'captcha-error' });
-    } else {
-      r.connect({})
-      .then((connection) => {
-        channel.insert(connection, req.body.name, req.headers.host)
-        .then((channelId) => res.send({ id: channelId }))
-        .catch(() => res.status(403).send({ err: 'channel-insert-error' }));
-      });
+  util.validateCaptcha(req.body.captcha)
+  .then(() => {
+    if(!req.body.name || !req.headers.host) {
+      res.status(503).send({err: 'channel-inser-error: missing request parameters'});
     }
-  });
+    r.connect({})
+    .then((connection) => {
+      channel.insert(connection, req.body.name, req.headers.host)
+      .then((channelId) => res.send({ id: channelId }))
+      .catch(() => res.status(403).send({ err: 'channel-insert-error' }));
+    });
+  })
+  .catch(() => res.status(403).send({ err: 'captcha-error' }));
 }
 
 /**
@@ -41,15 +40,15 @@ function insert(req, res) {
  * @Param {object} express.js response object
  */
 function fetch(req, res) {
-  if (req.params.id) {
+  if (!req.params.id) {
+    res.status(404).send({ err: 'channel-fetch-error: missing id' });
+  } else {
     r.connect({ id: req.params.id })
     .then((connection) => {
       channel.fetch(connection, req.params.id)
       .then((snapshot) => res.status(200).send(snapshot))
       .catch(() => res.status(404).send({ err: 'channel-fetch-error' }));
     });
-  } else {
-    res.status(404).send({ err: 'channel-fetch-no-id-error' });
   }
 }
 
@@ -60,7 +59,9 @@ function fetch(req, res) {
  * @Param {object} express.js response object
  */
 function join(req, res) {
-  if (req.params.id) {
+  if (!req.params.id) {
+    res.status(404).send({ err: 'channel-join-error: missing id' });
+  } else {
     channel.join(req.params.id, req.headers.host)
     .then((longID) => {
       res.send({
@@ -68,8 +69,6 @@ function join(req, res) {
       });
     })
     .catch(() => res.status(500).send({ err: 'channel-join-error' }));
-  } else {
-    res.status(404).send({ err: 'channel-join-no-id-error' });
   }
 }
 
