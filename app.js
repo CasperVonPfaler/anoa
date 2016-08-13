@@ -16,13 +16,13 @@ app.use(bodyParser.json());
 app.use(express.static('public/dist'));
 
 // express post
-app.post('/app/channelInsert', channelMiddleware.insert);
-app.post('/app/questionInsert', questionMiddleware.insert);
-app.post('/app/answerInsert', answerMiddleware.insert);
+app.post('/api/channelInsert', channelMiddleware.insert);
+app.post('/api/questionInsert', questionMiddleware.insert);
+app.post('/api/answerInsert', answerMiddleware.insert);
 
 // express get
-app.get('/app/channelGet/:id', channelMiddleware.fetch);
-app.get('/app/channelJoin/:id', channelMiddleware.join);
+app.get('/api/channelGet/:id', channelMiddleware.fetch);
+app.get('/api/channelJoin/:id', channelMiddleware.join);
 
 app.get('*', (req, res, next) => {
   if (req.accepts('html')) res.sendFile(`${__dirname}/public/index.html`);
