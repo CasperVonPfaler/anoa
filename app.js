@@ -1,8 +1,11 @@
 const express = require('express');
-const app = express();
-const server = require('http').Server(app); // eslint-disable-line new-cap
-const io = require('socket.io')(server);
+const http = require('http');
+const socketIo = require('socket.io');
 const bodyParser = require('body-parser');
+
+const app = express();
+const server = http.Server(app);
+const io = socketIo(server);
 
 const channelMiddleware = require('./app/channel/channel-middleware');
 const questionMiddleware = require('./app/question/question-middleware');
