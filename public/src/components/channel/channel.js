@@ -139,10 +139,6 @@ export default class Channel extends React.Component {
     }
   }
 
-  registerQuestionServiceWorker() {
-
-  }
-
   render() {
     return (
       <div className="channel">
