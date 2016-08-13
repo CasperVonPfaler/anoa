@@ -2,9 +2,10 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 
 const app = express();
-const server = http.Server(app);
+const server = http.Server(app); // eslint-disable-line
 const io = socketIo(server);
 
 const channelMiddleware = require('./app/channel/channel-middleware');
@@ -13,6 +14,7 @@ const answerMiddleware = require('./app/answer/answer-middleware');
 
 // express use
 app.use(bodyParser.json());
+app.use(compression());
 app.use(express.static('public/dist'));
 
 // express post

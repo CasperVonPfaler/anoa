@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "npm run web-build && npm run app",
-    "app": "node -r dotenv/config app.js dotenv_config_path=./.envi",
+    "app": "node -r dotenv/config app.js",
     "dev": "rethinkdb & npm run app & npm run web-build:watch",
-    "web-build": "webpack --optimize-minimize",
+    "web-build": "webpack --optimize-minimize --progress --colors",
     "web-build:watch": "webpack --progress --colors --watch"
   },
   "author": "Casper von pfaler",
@@ -16,15 +16,16 @@
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "classnames": "^2.2.5",
+    "compression": "^1.6.2",
     "express": "^4.13.4",
     "node-uuid": "^1.4.7",
-    "rethinkdb": "^2.3.2",
-    "rx": "^4.1.0",
     "react": "0.14.6",
     "react-dom": "0.14.6",
     "react-router": "^2.5.2",
-    "socket.io-client": "^1.4.8",
+    "rethinkdb": "^2.3.2",
+    "rx": "^4.1.0",
     "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8",
     "superagent": "^2.0.0"
   },
   "devDependencies": {
