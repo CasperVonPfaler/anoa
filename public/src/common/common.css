@@ -22,6 +22,9 @@ button {
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
 }
+button:hover {
+  color: #0277BD;
+}
 button:focus {
   outline: none;
 }

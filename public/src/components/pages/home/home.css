@@ -1,0 +1,7 @@
+.login-form__caption {
+  width: 100%;
+  max-width: 490px;
+  font-size: 1.2rem;
+  font-family: 'RobotoSlab', serif;
+  margin: 0 auto;
+}

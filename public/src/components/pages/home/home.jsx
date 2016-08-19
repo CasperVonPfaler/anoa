@@ -2,6 +2,8 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import request from 'superagent';
 
+require('./home.css');
+
 export default class Home extends React.Component {
   constructor() {
     super();

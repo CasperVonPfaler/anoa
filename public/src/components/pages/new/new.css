@@ -1,0 +1,15 @@
+.new-fieldset__pricing {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 5rem auto;
+  
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.new-fieldset__pricing > .pricing-bubble {
+  width: 200px;
+  display: inline-block;
+  margin: 0 .5rem 1rem .5rem;
+}
