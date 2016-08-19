@@ -1,14 +1,33 @@
+const webpack = require('webpack');
+const Dashboard = require('webpack-dashboard');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+
+const dashboard = new Dashboard();
+
 module.exports = {
-  entry: './public/src/public.js',
+  entry: [
+    'webpack/hot/only-dev-server',
+    'webpack-dev-server/client?http://localhost:5000',
+    `${__dirname}/public/src/public.jsx`,
+  ],
   output: {
-    path: './public/dist',
+    path: `${__dirname}/public/dist`,
     filename: 'index.js',
   },
   module: {
     loaders: [
       {
+        test: /\.jsx$/,
+        exclude: /(node_modules|bower_components)/,
+        loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react'],
+      },
+      {
         test: /\.js$/,
-        loaders: ['babel'],
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel',
+        query: {
+          presets: ['es2015'],
+        },
       },
       {
         test: /\.css$/,
@@ -24,4 +43,8 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new DashboardPlugin(dashboard.setData),
+  ],
 };
