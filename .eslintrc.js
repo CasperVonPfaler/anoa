@@ -5,6 +5,7 @@ module.exports = {
         "react"
     ],
     "rules": {
-        "no-use-before-define": ["error", { "functions": false, "classes": false }]
+        "no-use-before-define": ["error", { "functions": false, "classes": false }],
+        "max-len": ["error", { "ignorePattern": "\\s*<" }]
     }
 };
