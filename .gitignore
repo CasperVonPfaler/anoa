@@ -1,6 +1,6 @@
 node_modules
 .DS_Store
-.envi
+.env
 rethinkdb_data
 dist
 npm-debug.log
