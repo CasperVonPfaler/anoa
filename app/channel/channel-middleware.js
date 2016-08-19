@@ -1,7 +1,6 @@
 const r = require('rethinkdb');
 
 const channel = require('./channel');
-const util = require('../util/util');
 
 module.exports = {
   insert,
@@ -18,19 +17,15 @@ module.exports = {
  * @Param {object} express.js response object
  */
 function insert(req, res) {
-  util.validateCaptcha(req.body.captcha)
-  .then(() => {
-    if(!req.body.name || !req.headers.host) {
-      res.status(503).send({err: 'channel-inser-error: missing request parameters'});
-    }
-    r.connect({})
-    .then((connection) => {
-      channel.insert(connection, req.body.name, req.headers.host)
-      .then((channelId) => res.send({ id: channelId }))
-      .catch(() => res.status(403).send({ err: 'channel-insert-error' }));
-    });
-  })
-  .catch(() => res.status(403).send({ err: 'captcha-error' }));
+  if (!req.body.name || !req.headers.host) {
+    res.status(503).send({ err: 'channel-inser-error: missing request parameters' });
+  }
+  r.connect({})
+  .then((connection) => {
+    channel.insert(connection, req.body.name, req.headers.host)
+    .then((channelId) => res.send({ id: channelId }))
+    .catch(() => res.status(403).send({ err: 'channel-insert-error' }));
+  });
 }
 
 /**
