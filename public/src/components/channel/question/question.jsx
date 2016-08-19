@@ -1,6 +1,8 @@
 import React from 'react';
 import request from 'superagent';
 
+require('./question.css');
+
 export default class Question extends React.Component {
   constructor(props) {
     super(props);

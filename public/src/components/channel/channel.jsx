@@ -3,9 +3,11 @@ import request from 'superagent';
 import io from 'socket.io-client';
 import classNames from 'classnames';
 
-import Question from './question/question';
-import Answer from './question/answer/answer';
-import util from '../../common/util';
+import Question from './question/question.jsx';
+import Answer from './question/answer/answer.jsx';
+import util from '../../common/util.js';
+
+require('./channel.css');
 
 export default class Channel extends React.Component {
   constructor(props) {
@@ -26,6 +28,7 @@ export default class Channel extends React.Component {
     this.storeQuestion = this.storeQuestion.bind(this);
     this.appendNewQuestion = this.appendNewQuestion.bind(this);
     this.toggleLive = this.toggleLive.bind(this);
+    this.sortQuestions = this.sortQuestions.bind(this);
   }
 
   componentDidMount() {
@@ -41,13 +44,19 @@ export default class Channel extends React.Component {
       } else {
         this.setState({
           title: res.body.name,
-          questions: res.body.questions.length > 0 ? res.body.questions : [],
+          questions: res.body.questions.length > 0 ? this.sortQuestions(res.body.questions) : [],
           shortID: res.body.shortID,
         });
 
-        if (util.isFunction(callback)) callback(); 
+        if (util.isFunction(callback)) callback();
       }
     });
+  }
+
+  // this qould be extended to accept another parameter and sort differently
+  // depending on it
+  sortQuestions(questions) {
+    return questions.sort((a, b) => new Date(b.time) - new Date(a.time));
   }
 
   appendNewQuestion(question) {
@@ -145,12 +154,12 @@ export default class Channel extends React.Component {
         <div className="channel__top-bar">
           <h2 className="channel__top-bar__title">{this.state.title}</h2>
           <span className="channel__top-bar__id"> id: {this.state.shortID}</span>
-          <span className="channel__top-bar__live-toggle-label"> Live: </span> <button className={classNames('channel__top-bar__live-toggle', { 'channel__top-bar__live-toggle--active': this.state.socket })} onClick={this.toggleLive} ></button>
-          <a className="channel__create-or-join-new" href="/">Create or join another channel</a>
+          <span className={classNames('channel__top-bar__live-toggle', { 'channel__top-bar__live-toggle--active': this.state.socket })} onClick={this.toggleLive}> Live</span>
+          <a className="channel__create-or-join-new" href="/">Home</a>
         </div>
         <div className="channel__new-question">
-          <textarea className="channel__new-question__textarea" onChange={this.questionInputWatcher} value={this.state.questionInput} placeholder="Your question."></textarea>
-          <button className="channel__new-question__button" onClick={this.storeQuestion}>Ask question</button>
+          <textarea className="channel__new-question__textarea" onChange={this.questionInputWatcher} value={this.state.questionInput} placeholder="Your question." />
+          <button className="channel__new-question__button" onClick={this.storeQuestion}>Ask</button>
           <div className="channel__new-question__error">{this.state.questionInputNotification}</div>
         </div>
         {this.state.questions.length > 0 ? (
