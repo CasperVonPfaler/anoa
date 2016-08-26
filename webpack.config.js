@@ -2,16 +2,34 @@ const webpack = require('webpack');
 const Dashboard = require('webpack-dashboard');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
-const dashboard = new Dashboard();
+var plugins = [
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+  }),
+];
+var entry = [
+  'babel-polyfill',
+  `${__dirname}/src/index.jsx`,
+];
 
-module.exports = {
-  entry: [
+if (process.env.NODE_ENV === 'dev') {
+  const dashboard = new Dashboard();
+
+  plugins = plugins.concat([
+    new webpack.HotModuleReplacementPlugin(),
+    new DashboardPlugin(dashboard.setData),
+  ]);
+
+  entry = [
     'webpack/hot/only-dev-server',
     'webpack-dev-server/client?http://localhost:5000',
-    `${__dirname}/public/src/public.jsx`,
-  ],
+  ].concat(entry);
+}
+
+module.exports = {
+  entry,
   output: {
-    path: `${__dirname}/public/dist`,
+    path: `${__dirname}/dist`,
     filename: 'index.js',
   },
   module: {
@@ -24,10 +42,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          presets: ['es2015'],
-        },
+        loader: 'babel?presets[]=es2015&presets[]=react',
       },
       {
         test: /\.css$/,
@@ -43,8 +58,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new DashboardPlugin(dashboard.setData),
-  ],
+  plugins,
 };

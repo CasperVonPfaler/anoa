@@ -1,0 +1,90 @@
+.pages {
+   
+}
+
+.pages__nav {
+  position: fixed;
+  top: 0;
+  left: 5rem;
+  width: 5rem;
+  margin: 10rem 0;
+  z-index: 10;
+}
+
+.pages__content {
+  position: absolute;
+  top: 0;
+  left: 10rem;
+  right: 0;
+  margin: 10rem 0 10rem 0;
+}
+
+.pages-fieldset {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 15rem 0 5rem;
+  vertical-align: middle;
+  border: none;
+}
+
+.pages-fieldset__top-buttons {
+  text-align: center;
+}
+
+.pages-fieldset__form__input {
+  display: block;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #d3d3d3; 
+  font-size: 1.2rem;
+  margin: 0 auto 1rem auto;
+  font-family: 'RobotoSlab', serif;
+}
+.pages-fieldset__form__input:focus {
+  border-bottom: 1px solid #0277BD;
+}
+
+.pages-fieldset__form__button,
+.pages-fieldset__top-buttons__button {
+  display: block;
+  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  margin: 0 auto 1rem auto;
+  padding: 0;
+  border: none;
+  color: #0277BD;
+  background: none;
+  outline: none;
+}
+.pages-fieldset__form__button:hover,
+.pages-fieldset__top-buttons__button:hover {
+  color: #000;
+}
+
+.pages-fieldset__top-buttons__button {
+  margin: 5rem 1rem 2.5rem 1rem;
+  color: rgba(2, 119, 189, .5);
+  display: inline-block;
+}
+
+.pages-fieldset__top-buttons__button--active {
+  color: #0277BD;
+}
+
+.pages-fieldset__top-buttons__paragraph {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-family: 'RobotoSlab' serif;
+  text-align: left;
+}
+
+.pages-fieldset__form__error-notification {
+  margin: 0 0 5rem 0;
+  text-align: center;
+  color: #C62828;
+  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+}
+
