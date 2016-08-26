@@ -1,4 +1,7 @@
+process.env.PWD = process.cwd();
+
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const PouchDB = require('pouchdb');
@@ -9,6 +12,7 @@ const devServer = require('./dev.server');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const PROD = process.env.NODE_ENV === 'production';
+const CWD = process.cwd();
 
 const db = PouchDB.defaults({ db: memdown });
 
@@ -17,7 +21,7 @@ const pouchConfig = {
 }
 
 app.use(compression());
-app.use(express.static('dist'));
+app.use(express.static(path.join(CWD, 'dist')));
 app.use('/db', expressPouchDB(db, pouchConfig));
 
 app.get('*', (req, res, next) => {
