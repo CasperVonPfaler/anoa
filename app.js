@@ -1,7 +1,6 @@
 process.env.PWD = process.cwd();
 
-const fs = require('fs');
-const path = require('path');
+
 const express = require('express');
 const compression = require('compression');
 const PouchDB = require('pouchdb');
@@ -21,7 +20,7 @@ const pouchConfig = {
 }
 
 app.use(compression());
-app.use(express.static(path.join(CWD, 'dist')));
+app.use(express.static(__dirname + '/dist'));
 app.use('/db', expressPouchDB(db, pouchConfig));
 
 app.get('*', (req, res, next) => {
