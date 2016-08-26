@@ -1,12 +1,12 @@
 {
-  "name": "anoa",
-  "version": "0.0.1",
+  "name": "anoa-1",
+  "version": "0.2.0",
   "description": "anonymous questions made easy",
   "main": "server.js",
   "scripts": {
-    "start": "npm run build && NODE_ENV=production node app.js",
+    "start": "NODE_ENV=production node app.js",
     "dev": "NODE_ENV=dev node app.js",
-    "build": "webpack --optimize-minimize --progress --colors"
+    "build": "webpack --optimize-minimize"
   },
   "author": "Casper von pfaler",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "compression": "^1.6.2",
     "express": "^4.13.4",
     "express-pouchdb": "^1.0.7",
+    "memdown": "^1.2.0",
     "pouchdb": "^5.4.5",
     "pouchdb-server": "^1.2.0",
     "react": "0.14.6",

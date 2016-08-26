@@ -25,7 +25,7 @@ function joinChannel(dispatch, id) {
     dispatch(dispatchAction('HOME_UPDATE_ERROR', 'please enter a channel id.'));
   } else {
     setLocalDatabseFromRemote(id)
-    .then((database) => setDatabaseInState(database, dispatch))
+    .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       browserHistory.push(`/channel/${id}`);
     })
