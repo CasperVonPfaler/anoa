@@ -1,9 +1,3 @@
 node_modules
 .DS_Store
-.env
-rethinkdb_data
-dist
 npm-debug.log
-log.txt
-config.json
-database/*
