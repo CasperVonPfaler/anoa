@@ -2,9 +2,9 @@ import PouchDB from 'pouchdb';
 
 export function setLocalDatabseFromRemote(id) {
   const database = {
-    local: new PouchDB(id, { skip_setup: true }),
+    local: new PouchDB(id),
     remote: new PouchDB(
-      `localhost:5000/db/${id}`,
+      `http://localhost:5000/db/${id}`,
       { skip_setup: true }
     ),
   };
@@ -25,7 +25,7 @@ export function setLocalDatabaseFromLocal(id) {
   const database = {
     local: new PouchDB(id, { skip_setup: true }),
     remote: new PouchDB(
-      `localhost:5000/db/${id}`,
+      `http://localhost:5000/db/${id}`,
        { skip_setup: true }
     ),
   };
@@ -45,7 +45,7 @@ export function setLocalDatabaseFromLocal(id) {
 export function createNewDatabase(id) {
   const database = {
     local: new PouchDB(id),
-    remote: new PouchDB(`localhost:5000/db/${id}`),
+    remote: new PouchDB(`http://localhost:5000/db/${id}`),
   };
 
   return new Promise((resolve) => {
