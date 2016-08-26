@@ -8,6 +8,7 @@
     "dev": "NODE_ENV=dev node app.js",
     "build": "webpack --optimize-minimize"
   },
+  
   "author": "Casper von pfaler",
   "license": "ISC",
   "dependencies": {
