@@ -54,7 +54,6 @@ function newChannel(dispatch, name) {
       browserHistory.push(`/channel/${id}`);
     })
     .catch((err) => {
-      console.log(err);
       dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, please try again.')); //eslint-disable-line
     });
   }
@@ -71,8 +70,10 @@ export function submitHomeForm() {
 
     if (homeSubmitType === 'join') {
       joinChannel(dispatch, homeInput);
+      dispatch(updateHomeInput(''));
     } else if (homeSubmitType === 'new') {
       newChannel(dispatch, homeInput);
+      dispatch(updateHomeInput(''));
     } else {
       dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, try to reload the page.')); //eslint-disable-line
     }
@@ -87,7 +88,6 @@ export function submitHomeForm() {
 export function toggleSubmitType(newSubmitType) {
   return (dispatch, getState) => {
     const { homeSubmitType } = getState();
-
     if (homeSubmitType === newSubmitType) {
       return;
     } else if (newSubmitType === 'new' || newSubmitType === 'join') {
@@ -103,6 +103,9 @@ export function toggleSubmitType(newSubmitType) {
  * on the home page
  */
 export function updateHomeInput(payload) {
-  return (dispatch) => dispatch(dispatchAction('HOME_UPDATE_INPUT', payload));
+  return {
+    type: 'HOME_UPDATE_INPUT',
+    payload
+  }
 }
 

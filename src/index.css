@@ -8,18 +8,18 @@ html, body {
 h2 {
   font-size: 3rem;
   margin: 0 0 3rem 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inconsolata', monospace;
   color: #0277BD;
   font-weight: bold;
 }
 
 button {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   background: #fff;  
   color: #000;
   border: 1px solid #000;
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inconsolata', monospace;
 }
 button:hover {
   color: #0277BD;
@@ -31,3 +31,4 @@ button:focus {
 /* DOWNLOAD THEse and bundle them */
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 @import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata);

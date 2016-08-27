@@ -70,7 +70,6 @@ function setChannelInitialState(dispatch, state, id) {
   .then(() => getChannelQuestions(local))
   .then((questions) => getQuestionAnswers(questions, local))
   .then((questionsWithAnswers) => {
-    console.log(questionsWithAnswers);
     dispatch({
       type: 'CHANNEL_SET_INITIAL_QUESTIONS',
       payload: questionsWithAnswers,
@@ -88,12 +87,12 @@ export function initializeChannelAction(id) {
   };
 }
 
-export function toggleQuestion(questionToToggle, expand) {
+export function toggleQuestion(questionToToggle) {
   return {
     type: 'CHANNEL_TOGGLE_QUESTION',
     payload: {
       questionToToggle,
-      expand,
+      expand: !questionToToggle.expanded,
     },
   };
 }
@@ -127,8 +126,8 @@ export function addNewQuestion() {
       });
       dispatch(updateQuestionInput(''));
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
+
     });
   };
 }

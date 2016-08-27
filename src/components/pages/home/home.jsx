@@ -18,7 +18,7 @@ export default function Home({
     <fieldset className="pages-fieldset">
       <div className="pages-fieldset__top-buttons">
         <p className="pages-fieldset__top-buttons__paragraph">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Create a channel or join an existing one.
         </p>
         <button className={classNames('pages-fieldset__top-buttons__button', { 'pages-fieldset__top-buttons__button--active': submitType === 'new' })} onClick={setSubmitTypeNew}>New</button>
         <button className={classNames('pages-fieldset__top-buttons__button', { 'pages-fieldset__top-buttons__button--active': submitType === 'join' })} onClick={setSubmitTypeJoin}>Join</button>

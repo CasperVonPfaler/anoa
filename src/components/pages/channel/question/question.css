@@ -2,6 +2,7 @@
   margin: 0 0 5rem 0;
   border-bottom: 1px solid #000;
   position: relative;
+  font-family: 'Inconsolata', monospace;
 }
 
 .question__close {
@@ -20,20 +21,26 @@
 }
 
 .question__text {
-  width: 90%;
+  width: 100%;
 }
 
 .question__title {
+  white-space: pre-line;
   font-size: 2rem;
-  margin: 0 1rem .5rem 0;
+  display: inline-block;
+  margin: 0 0 1rem 0;
   cursor: pointer;
 }
 .question__title:hover {
   color: #0277BD;
 }
 
+.question__title--active:hover {
+  color: #EF5350;
+}
+
 .question__meta {
-  margin: 0 0 1.5rem 0;
+  margin: 0;
   font-size: 1rem;
 }
 .question__meta__answers-count {
@@ -46,7 +53,8 @@
 }
 
 .question__answer-list {
-    margin: 0 0 3rem 0;
+    margin: 1rem 0 3rem 0;
+    padding: 0 0 0 1.5rem;
 }
 
 .question__new-answer {
@@ -61,18 +69,12 @@
   color: #000;
 }
 
-.question__new-answer__title {
-  margin: 0 0 1rem 0;
-  color: #000;
-  font-size: 1.2rem;
-}
-
 .question__new-answer__textarea {
   width: 50%;
   height: 5rem;
   display: block;
-  font-size: 1.2rem;
-  font-family: 'RobotoSlab', serif;
+  font-size: 1.5rem;
+  font-family: 'Inconsolata', monospace;
   color: #000;
   margin: 0 0 1rem 0;
 }

@@ -33,10 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(initializeChannelAction(id));
   },
   expandQuestion: (question) => () => {
-    dispatch(toggleQuestion(question, true));
-  },
-  shrinkQuestion: (question) => () => {
-    dispatch(toggleQuestion(question, false));
+    dispatch(toggleQuestion(question));
   },
   storeAnswer: (question) => () => {
     dispatch(storeQuestionAnswer(question));

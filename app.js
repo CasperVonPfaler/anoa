@@ -1,6 +1,3 @@
-process.env.PWD = process.cwd();
-
-
 const express = require('express');
 const compression = require('compression');
 const PouchDB = require('pouchdb');
@@ -20,7 +17,7 @@ const pouchConfig = {
 }
 
 app.use(compression());
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static(__dirname + '/dist', { maxAge: 86400000*7}));
 app.use('/db', expressPouchDB(db, pouchConfig));
 
 app.get('*', (req, res, next) => {

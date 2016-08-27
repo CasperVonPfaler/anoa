@@ -3,6 +3,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
 .nav-heading {
@@ -10,16 +11,14 @@
   color: #0277BD;
   text-align: center;
   width: 5rem;
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   text-transform: uppercase;
 }
 
 .nav-item {
   text-align: center;
   margin: 1rem 0;
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 .nav-item:last-child {
   margin-bottom: 0;

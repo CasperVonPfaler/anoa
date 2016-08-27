@@ -18,7 +18,7 @@ export default class Channel extends Component {
           <span className={classNames('channel__top-bar__live-toggle', { 'channel__top-bar__live-toggle--active': this.props.live })} onClick={this.props.toggleLive}> Live</span>
         </div>
         <div className="channel__new-question">
-          <textarea className="channel__new-question__textarea" onChange={this.props.inputWatcher} value={this.props.channelInput} placeholder="Your question." />
+          <textarea className="channel__new-question__textarea" onChange={this.props.inputWatcher} value={this.props.channelInput} placeholder="Your question..." />
           <button className="channel__new-question__button" onClick={this.props.storeQuestion(this.props.params.id)}>Ask</button>
           <div className="channel__new-question__error">{this.props.notification}</div>
         </div>
@@ -33,7 +33,6 @@ export default class Channel extends Component {
                 answers={question.answers}
                 answerInput={question.answerInput}
                 expand={this.props.expandQuestion(question)}
-                shrink={this.props.shrinkQuestion(question)}
                 storeAnswer={this.props.storeAnswer(question)}
                 answerInputWatcher={this.props.answerInputWatcher(question)}
               />
@@ -47,7 +46,6 @@ export default class Channel extends Component {
 
 Channel.propTypes = {
   expandQuestion: React.PropTypes.func.isRequired,
-  shrinkQuestion: React.PropTypes.func.isRequired,
   storeAnswer: React.PropTypes.func.isRequired,
   answerInputWatcher: React.PropTypes.func.isRequired,
   title: React.PropTypes.string.isRequired,

@@ -1,0 +1,14 @@
+[Fri, 26 Aug 2016 20:38:30 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/ 404
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - PUT /H110d7Rc/ 201
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET / 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/_local/vbPAEKZRWzwx8V2mQhDkAg%3D%3D? 404
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - POST /H110d7Rc/_revs_diff 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - POST /H110d7Rc/_bulk_docs 201
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/_local/vbPAEKZRWzwx8V2mQhDkAg%3D%3D? 404
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - POST /H110d7Rc/_bulk_docs 201
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/ 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET / 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/_changes?timeout=25000&style=all_docs&heartbeat=10000&since=0&limit=100 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/_changes?timeout=25000&style=all_docs&heartbeat=10000&since=1&limit=100 200
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - GET /H110d7Rc/_local/nvijY0Ss2ueJsU6QGNYhZA%3D%3D? 404
+[Fri, 26 Aug 2016 20:38:31 GMT] [info] [<0.000.0>] ::ffff:127.0.0.1 - - POST /H110d7Rc/_bulk_docs 201
