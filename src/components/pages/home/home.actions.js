@@ -28,6 +28,8 @@ function joinChannel(dispatch, id) {
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       browserHistory.push(`/channel/${id}`);
+      dispatch(updateHomeInput(''));
+      dispatch(dispatchAction('HOME_UPDATE_ERROR', ''));
     })
     .catch(() => {
       dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, please try again.')); //eslint-disable-line
@@ -52,6 +54,8 @@ function newChannel(dispatch, name) {
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       browserHistory.push(`/channel/${id}`);
+      dispatch(updateHomeInput(''));
+      dispatch(dispatchAction('HOME_UPDATE_ERROR', ''));
     })
     .catch((err) => {
       dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, please try again.')); //eslint-disable-line
@@ -70,10 +74,8 @@ export function submitHomeForm() {
 
     if (homeSubmitType === 'join') {
       joinChannel(dispatch, homeInput);
-      dispatch(updateHomeInput(''));
     } else if (homeSubmitType === 'new') {
       newChannel(dispatch, homeInput);
-      dispatch(updateHomeInput(''));
     } else {
       dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, try to reload the page.')); //eslint-disable-line
     }
@@ -91,7 +93,14 @@ export function toggleSubmitType(newSubmitType) {
     if (homeSubmitType === newSubmitType) {
       return;
     } else if (newSubmitType === 'new' || newSubmitType === 'join') {
-      dispatch(dispatchAction('HOME_UPDATE_SUBMITTYPE', newSubmitType));
+      dispatch({
+        type: 'HOME_UPDATE_SUBMITTYPE',
+        payload: newSubmitType
+      });
+      dispatch({
+        type: 'HOME_UPDATE_INPUTPLACEHOLDER',
+        payload: newSubmitType === 'new' ? 'Channel name' : 'Channel id',
+      });
     } else {
       dispatch(dispatchAction('HOME_UPDATE_ERROR','Something has gone horribly wrong, try to reload the page.')); //eslint-disable-line
     }

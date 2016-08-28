@@ -25,7 +25,7 @@ export const homeInputPlaceholder = (state = 'Channel id', action) => {
   }
 };
 
-export const homeSubmitType = (state = 'new', action) => {
+export const homeSubmitType = (state = 'join', action) => {
   switch (action.type) {
     case 'HOME_UPDATE_SUBMITTYPE':
       return action.payload;
