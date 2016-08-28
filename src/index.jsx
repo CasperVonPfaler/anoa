@@ -13,6 +13,7 @@ import About from './components/pages/about/about.jsx';
 import * as homeReducers from './components/pages/home/home.reducer';
 import * as channelReducers from './components/pages/channel/channel.reducer';
 import * as databaseReducers from './database/database.reducer';
+import * as navReducers from './components/pages/nav/nav.reducer'
 
 require('./index.css');
 
@@ -21,7 +22,8 @@ const reducer = combineReducers(
     {},
     homeReducers,
     channelReducers,
-    databaseReducers
+    databaseReducers,
+    navReducers
   )
 );
 

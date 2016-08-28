@@ -7,6 +7,11 @@
   padding: 0 15rem 0 5rem;
 }
 
-.about > p:first-child {
+.about > h3:first-child {
   margin-top: 0;
+}
+
+.about__paragraph-title {
+  font-size: 2rem;
+  color: #0277BD;
 }

@@ -2,8 +2,85 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0;
-  background: #fff;
 }
+
+
+
+
+
+
+
+html.night-mode {
+  background: #282a36;
+  color: #fff;
+}
+
+.night-mode input, .night-mode textarea {
+  color: #fff;
+  background: #282a36;
+}
+
+.night-mode .pages-fieldset__top-buttons__button {
+  background: #282a36;
+  color: rgba(90, 247, 142, .5);
+}
+.night-mode .pages-fieldset__top-buttons__button:hover {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__top-buttons__button--active {
+  color: #5af78e;
+}
+
+.night-mode .nav-item__link {
+  color: rgba(255, 255, 255, .5);
+}
+.night-mode .nav-item__link:hover {
+  color: #5af78e;
+}
+
+.night-mode .nav-item__link--active {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__form__button {
+  color: #5af78e;
+}
+.night-mode .pages-fieldset__form__button:hover {
+  color: #fff;
+}
+
+.night-mode .channel__new-question__button {
+  color: #5af78e;
+}
+.night-mode .channel__new-question__button:hover {
+  color: #fff;
+}
+
+.night-mode .nav-heading,
+.night-mode .channel__top-bar__title,
+.night-mode .channel__no-questions,
+.night-mode .about__paragraph-title,
+.question__meta__answers-count__number {
+  color: #5af78e;
+}
+
+.night-mode .question {
+  border-bottom: 1px solid #fff;
+}
+
+.night-mode .nav-item__icon {
+  fill: #fff;
+}
+
+
+
+
+
+
+
+
+
 
 h2 {
   font-size: 3rem;

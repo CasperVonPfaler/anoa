@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from './nav/nav.jsx';
+import NavContainer from './nav/nav.container';
 
 require('./pages.css');
 
@@ -7,7 +7,7 @@ export default function Pages({ children }) {
   return (
     <div className="pages">
       <div className="pages__nav">
-        <Nav />
+        <NavContainer />
       </div>
       <div className="pages__content">
          {children}

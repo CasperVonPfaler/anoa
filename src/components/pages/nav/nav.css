@@ -39,3 +39,10 @@
 .nav-item__link--active {
   color: #000;
 }
+
+.nav-item__icon {
+  fill: #000;
+  margin-top: 5rem;
+  cursor: pointer;
+}
+
