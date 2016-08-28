@@ -76,6 +76,8 @@ export const channelInput = (state = '', action) => {
 
 export const channelNotification = (state = '', action) => {
   switch (action.type) {
+    case 'CHANNEL_UPDATE_NOTIFICATION':
+      return action.payload;
     default:
       return state;
   }

@@ -20,7 +20,7 @@ export default class Channel extends Component {
         <div className="channel__new-question">
           <textarea className="channel__new-question__textarea" onChange={this.props.inputWatcher} value={this.props.channelInput} placeholder="Your question..." />
           <button className="channel__new-question__button" onClick={this.props.storeQuestion(this.props.params.id)}>Ask</button>
-          <div className="channel__new-question__error">{this.props.notification}</div>
+          <div className="channel__new-question__notification">{this.props.notification}</div>
         </div>
         {this.props.questions.length > 0 ? (
           <ul className="channel__question-list">

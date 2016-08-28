@@ -38,10 +38,10 @@ function getQuestionAnswers(questions, localDatabase) {
   }
 
   return Promise.all(questions.rows.map((questionDoc) => localDatabase.allDocs({
-    startkey: `answer_${questionDoc.doc._id}`,
-    endkey: `answer_${questionDoc.doc._id}\uffff`,
-    include_docs: true,
-  })
+      startkey: `answer_${questionDoc.doc._id}`,
+      endkey: `answer_${questionDoc.doc._id}\uffff`,
+      include_docs: true,
+    })
     .then((questionAnswers) => new Promise((resolve) => {
       if (questionAnswers.rows <= 0) {
         resolve(Object.assign({}, questionDoc.doc, {
@@ -125,9 +125,16 @@ export function addNewQuestion() {
         })),
       });
       dispatch(updateQuestionInput(''));
+      dispatch({
+        type: 'CHANNEL_UPDATE_NOTIFICATION',
+        payload: 'Question stored.'
+      });
     })
     .catch(() => {
-
+      dispatch({
+        type: 'CHANNEL_UPDATE_NOTIFICATION',
+        payload: 'Something went wrong, please try again.'
+      });
     });
   };
 }
@@ -160,6 +167,37 @@ export function storeQuestionAnswer(targetQuestion) {
       dispatch(updateQuestionAnswerInput(targetQuestion, ''));
     });
   };
+}
+
+
+/**
+ * 
+ * TODO: Need to add a sync handler ref to state and check it to know
+ * if we want to start or stop syncing
+ * 
+ */
+export function toggleLiveChanges() {
+  return (dispatch, getState) => {
+    const { local, remote, liveChanges } = getState().database;
+
+    if(!local || !remote) {
+      return;
+    }
+
+    if(liveChanges) {
+      // call .cacnel() on the sync handler 'liveChanges' and then
+      // dispatch an action to set the sync handler as undefined
+      return;
+    }
+
+    local.sync(remote, { live: true })
+    .on('change', (change) => {
+      
+    })
+    .on('error', () => {
+
+    })
+  }
 }
 
 export function updateQuestionAnswerInput(question, answerInput) {
