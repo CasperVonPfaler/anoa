@@ -2,12 +2,13 @@ const webpack = require('webpack');
 const Dashboard = require('webpack-dashboard');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
-var plugins = [
+const plugins = [
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
   }),
 ];
-var entry = [
+
+const entry = [
   'babel-polyfill',
   `${__dirname}/src/index.jsx`,
 ];
@@ -15,15 +16,15 @@ var entry = [
 if (process.env.NODE_ENV === 'dev') {
   const dashboard = new Dashboard();
 
-  plugins = plugins.concat([
+  plugins.push.apply(plugins, [
     new webpack.HotModuleReplacementPlugin(),
     new DashboardPlugin(dashboard.setData),
   ]);
 
-  entry = [
+  entry.push.apply(entry, [
     'webpack/hot/only-dev-server',
     'webpack-dev-server/client?http://localhost:5000',
-  ].concat(entry);
+  ]);
 }
 
 module.exports = {
