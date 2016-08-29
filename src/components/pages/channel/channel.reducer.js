@@ -16,20 +16,43 @@ export const channelID = (state = '', action) => {
   }
 };
 
-export const channelIsLive = (state = false, action) => {
+export const channelInput = (state = '', action) => {
   switch (action.type) {
-    case 'CHANNEL_TOGGLE_LIVE':
-      return action.payload !== state;
+    case 'CHANNEL_UPDATE_INPUT':
+      return action.payload;
     default:
       return state;
   }
 };
+
+export const channelNotification = (state = '', action) => {
+  switch (action.type) {
+    case 'CHANNEL_UPDATE_NOTIFICATION':
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+export const liveChanges = (state = false, action) => {
+  switch(action.type) {
+    case 'CHANNEL_TOGGLE_LIVE_CHANGES':
+      return action.payload;
+    default:
+      return state;
+  }
+}
 
 export const channelQuestions = (state = [], action) => {
   switch (action.type) {
     case 'CHANNEL_SET_INITIAL_QUESTIONS':
       return action.payload;
     case 'CHANNEL_ADD_QUESTION':
+      for(let i = 0; i < state.length; ++i) {
+        if (state[i]._id === action.payload[0]._id) {
+          return state;
+        }
+      }
       return action.payload.concat(state);
     case 'CHANNEL_TOGGLE_QUESTION':
       return state.map((question) => {
@@ -44,7 +67,12 @@ export const channelQuestions = (state = [], action) => {
       });
     case 'CHANNEL_ADD_ANSWER':
       return state.map((question) => {
-        if (question === action.payload.question) {
+        if (question._id === action.payload.question._id) {
+          for(let i = 0; i < question.answers.length; ++i) {
+            if (question.answers[i]._id === action.payload.answer[0]._id) {
+              return question;
+            }
+          }
           return Object.assign({}, question, {
             answers: question.answers.concat(action.payload.answer),
           });
@@ -65,20 +93,3 @@ export const channelQuestions = (state = [], action) => {
   }
 };
 
-export const channelInput = (state = '', action) => {
-  switch (action.type) {
-    case 'CHANNEL_UPDATE_INPUT':
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export const channelNotification = (state = '', action) => {
-  switch (action.type) {
-    case 'CHANNEL_UPDATE_NOTIFICATION':
-      return action.payload;
-    default:
-      return state;
-  }
-};

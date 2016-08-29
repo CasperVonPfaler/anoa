@@ -24,8 +24,8 @@ function setChannelMeta(meta, id, dispatch) {
 
 function getChannelQuestions(localDatabase) {
   return localDatabase.allDocs({
-    startkey: 'question_',
-    endkey: 'question_\uffff',
+    startkey: 'question@',
+    endkey: 'question@\uffff',
     include_docs: true,
   });
 }
@@ -38,8 +38,8 @@ function getQuestionAnswers(questions, localDatabase) {
   }
 
   return Promise.all(questions.rows.map((questionDoc) => localDatabase.allDocs({
-      startkey: `answer_${questionDoc.doc._id}`,
-      endkey: `answer_${questionDoc.doc._id}\uffff`,
+      startkey: `answer@${questionDoc.doc._id}`,
+      endkey: `answer@${questionDoc.doc._id}\uffff`,
       include_docs: true,
     })
     .then((questionAnswers) => new Promise((resolve) => {
@@ -97,6 +97,53 @@ export function toggleQuestion(questionToToggle) {
   };
 }
 
+function addQuestionFromRemote(dispatch, question) {
+  dispatch({
+    type: 'CHANNEL_ADD_QUESTION',
+    payload: [].concat(Object.assign({}, question, {
+      expanded: false,
+      answers: [],
+      time: '0 seconds ago',
+      answerInput: '',
+    })),
+  });
+}
+
+/**
+ * TODO: Check if this exists before setting it in state
+ * 
+ */
+function addAnswerFromRemote(dispatch, getState, answer) {
+  const answerParentQuestionID = answer._id.match(/answer@(.*)@/)[1];
+  const parentQuestion = getQuestionFromState(getState, answerParentQuestionID);
+
+  if (parentQuestion) {
+
+    for( let i = 0; i < parentQuestion.answers; ++i ) {
+      console.log(parentQuestion.answers[i]);
+    }
+
+    dispatch({
+      type: 'CHANNEL_ADD_ANSWER',
+      payload: {
+        question: parentQuestion,
+        answer: [answer],
+      },
+    });
+  }
+}
+
+function getQuestionFromState(getState, questionID) {
+  const { channelQuestions } = getState();
+
+  for(let i = 0; i < channelQuestions.length; ++i) {
+    if(questionID === channelQuestions[i]._id) {
+      return channelQuestions[i];
+    }
+  }
+  return false;
+}
+
 export function addNewQuestion() {
   return (dispatch, getState) => {
     if (!getState().database.local) {
@@ -108,7 +155,7 @@ export function addNewQuestion() {
     }
 
     const newQuestion = {
-      _id: `question_${shortid.generate()}`,
+      _id: `question@${shortid.generate()}`,
       text: getState().channelInput,
       time: new Date(),
     };
@@ -150,7 +197,7 @@ export function storeQuestionAnswer(targetQuestion) {
     }
 
     const newAnswer = {
-      _id: `answer_${targetQuestion._id}${shortid.generate()}`,
+      _id: `answer@${targetQuestion._id}@${shortid.generate()}`,
       text: targetQuestion.answerInput,
       time: new Date(),
     };
@@ -178,25 +225,45 @@ export function storeQuestionAnswer(targetQuestion) {
  */
 export function toggleLiveChanges() {
   return (dispatch, getState) => {
-    const { local, remote, liveChanges } = getState().database;
+    const { local, remote } = getState().database;
+    const { liveChanges } = getState();
 
     if(!local || !remote) {
       return;
     }
 
     if(liveChanges) {
-      // call .cacnel() on the sync handler 'liveChanges' and then
-      // dispatch an action to set the sync handler as undefined
+      console.log('live changes disabled');
+      liveChanges.cancel();
+      dispatch({
+        type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
+        payload: false,
+      });
       return;
     }
 
-    local.sync(remote, { live: true })
-    .on('change', (change) => {
-      
-    })
-    .on('error', () => {
+    console.log('live changes enabled');  
 
+    const liveChangesInstance = local.sync(remote, { live: true, retry: true })
+    .on('change', (change) => {
+      const newDocs = change.change.docs;
+
+      newDocs.forEach((doc) => {
+        if(doc._id.indexOf('answer@') !== -1 && doc._id.indexOf('question@') !== -1 ) { // the doc is an answer
+          addAnswerFromRemote(dispatch, getState, doc);
+        } else if (doc._id.indexOf('question@') !== -1 ) { // The doc is a question 
+          addQuestionFromRemote(dispatch, doc);
+        } 
+      });
     })
+    .on('error', (err) => {
+      console.log(err);
+    });
+
+    dispatch({
+      type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
+      payload: liveChangesInstance,
+    });
   }
 }
 

@@ -52,6 +52,16 @@
   opacity: .5;
 }
 
+.channel__top-bar__icon {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 0.45rem;
+  cursor: pointer;
+}
+.channel__top-bar__icon:hover {
+  fill: #0277BD;
+}
+
 .channel__new-question__button {
   font-family: 'Inconsolata', monospace;
   background: none;
@@ -62,7 +72,7 @@
   margin: 0 1rem 0 0;
 }
 .channel__new-question__button:hover {
-  
+  color: #000;
 }
 .channel__new-question__button:focus {
   outline: 0;

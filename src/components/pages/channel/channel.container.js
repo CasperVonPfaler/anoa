@@ -7,12 +7,13 @@ import {
   updateQuestionAnswerInput,
   toggleQuestion,
   storeQuestionAnswer,
+  toggleLiveChanges,
    } from './channel.actions';
 
 const mapStateToProps = (state) => ({
   title: state.channelTitle,
   id: state.channelID,
-  live: state.channelIsLive,
+  live: state.liveChanges,
   input: state.channelInput,
   notification: state.channelNotification,
   questions: state.channelQuestions,
@@ -27,9 +28,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(addNewQuestion(id));
   },
   toggleLive: () => {
-
+    dispatch(toggleLiveChanges());
   },
   initializeChannel: (id) => {
+    dispatch(initializeChannelAction(id));
+  },
+  refreshChannel: (id) => () => {
     dispatch(initializeChannelAction(id));
   },
   expandQuestion: (question) => () => {
