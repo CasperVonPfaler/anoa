@@ -61,7 +61,7 @@ html.night-mode {
 .night-mode .channel__top-bar__title,
 .night-mode .channel__no-questions,
 .night-mode .about__paragraph-title,
-.question__meta__answers-count__number {
+.night-mode .question__meta__answers-count__number {
   color: #5af78e;
 }
 
@@ -69,10 +69,31 @@ html.night-mode {
   border-bottom: 1px solid #fff;
 }
 
-.night-mode .nav-item__icon {
+.night-mode .nav-item__icon,
+.night-mode .channel__top-bar__icon {
   fill: #fff;
 }
 
+.night-mode .nav-item__icon:hover,
+.night-mode .channel__top-bar__icon:hover {
+  fill: #5af78e;
+}
+
+.night-mode .question__title:hover {
+  color: #5af78e;
+}
+
+.night-mode .question__new-answer__button {
+  background: #282a36;
+  color: #5af78e;
+}
+.night-mode .question__new-answer__button:hover {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__form__input:focus {
+  border-bottom: 1px solid #5af78e;
+}
 
 
 

@@ -45,4 +45,7 @@
   margin-top: 5rem;
   cursor: pointer;
 }
+.nav-item__icon:hover {
+  fill: #0277BD;
+}
 
