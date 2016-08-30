@@ -1,0 +1,89 @@
+/* All the night-mode stuff is here at the moment, should
+ * move module css files 
+ */
+
+html.night-mode {
+  background: #282a36;
+  color: #fff;
+}
+
+.night-mode input, .night-mode textarea {
+  color: #fff;
+  background: #282a36;
+}
+
+.night-mode .pages-fieldset__top-buttons__button {
+  background: #282a36;
+  color: rgba(90, 247, 142, .5);
+}
+.night-mode .pages-fieldset__top-buttons__button:hover {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__top-buttons__button--active {
+  color: #5af78e;
+}
+
+.night-mode .nav-item__link {
+  color: rgba(255, 255, 255, .5);
+}
+.night-mode .nav-item__link:hover {
+  color: #5af78e;
+}
+
+.night-mode .nav-item__link--active {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__form__button {
+  color: #5af78e;
+}
+.night-mode .pages-fieldset__form__button:hover {
+  color: #fff;
+}
+
+.night-mode .channel__new-question__button {
+  color: #5af78e;
+}
+.night-mode .channel__new-question__button:hover {
+  color: #fff;
+}
+
+.night-mode .nav-heading,
+.night-mode .channel__top-bar__title,
+.night-mode .channel__no-questions,
+.night-mode .about__paragraph-title,
+.night-mode .question__meta__answers-count__number {
+  color: #5af78e;
+}
+
+.night-mode .question {
+  border-bottom: 1px solid #fff;
+}
+
+.night-mode .nav-item__icon,
+.night-mode .channel__top-bar__icon {
+  fill: #fff;
+}
+
+.night-mode .nav-item__icon:hover,
+.night-mode .channel__top-bar__icon:hover {
+  fill: #5af78e;
+}
+
+.night-mode .question__title:hover {
+  color: #5af78e;
+}
+
+.night-mode .question__new-answer__button {
+  background: #282a36;
+  color: #5af78e;
+}
+.night-mode .question__new-answer__button:hover {
+  color: #fff;
+}
+
+.night-mode .pages-fieldset__form__input:focus {
+  border-bottom: 1px solid #5af78e;
+}
+
