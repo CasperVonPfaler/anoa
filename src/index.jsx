@@ -16,6 +16,7 @@ import * as databaseReducers from './database/database.reducer';
 import * as navReducers from './components/pages/nav/nav.reducer'
 
 require('./index.css');
+require('./utils/night-mode.css');
 
 const reducer = combineReducers(
   Object.assign(
