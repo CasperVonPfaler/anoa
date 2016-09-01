@@ -12,6 +12,7 @@ export default function Pages({ children }) {
       <div className="pages__content">
          {children}
       </div>
+      <div className="pages__spooky-ghost-div"></div>
     </div>
   );
 }

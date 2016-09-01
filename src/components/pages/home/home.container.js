@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
-import { updateHomeInput, submitHomeForm, toggleSubmitType } from './home.actions';
 import Home from './home.jsx';
+import { 
+  updateHomeInput,
+  submitHomeForm,
+  toggleSubmitType
+} from './home.actions';
 
 const mapStateToProps = (state) => ({
   error: state.homeError,

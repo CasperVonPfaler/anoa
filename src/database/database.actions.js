@@ -2,6 +2,9 @@ import PouchDB from 'pouchdb';
 
 const remoteUrl = `${location.protocol}//${location.host}/db/`;
 
+/**
+ * @param {string} id of the database
+ */
 export function setLocalDatabseFromRemote(id) {
   const database = {
     local: new PouchDB(id),
@@ -23,6 +26,9 @@ export function setLocalDatabseFromRemote(id) {
   });
 }
 
+/**
+ * @param {string} id of the database
+ */
 export function setLocalDatabaseFromLocal(id) {
   const database = {
     local: new PouchDB(id, { skip_setup: true }),
@@ -44,6 +50,9 @@ export function setLocalDatabaseFromLocal(id) {
   });
 }
 
+/**
+ * @param {sting} id of the database
+ */
 export function createNewDatabase(id) {
   const database = {
     local: new PouchDB(id),
@@ -55,6 +64,10 @@ export function createNewDatabase(id) {
   });
 }
 
+/**
+ * @param {object} database object containing a local and a remote database
+ * @param {string} channel name to store in the database 
+ */
 export function setDatabaseMeta(database, name) {
   return database.local.put({
     _id: 'meta',
@@ -67,6 +80,10 @@ export function setDatabaseMeta(database, name) {
   }));
 }
 
+/**
+ * @param {func} dispatch function
+ * @param {object} database object containing a local and a remote database
+ */
 export function setDatabaseInState(dispatch, database) {
   return new Promise((resolve) => {
     dispatch({
@@ -77,10 +94,17 @@ export function setDatabaseInState(dispatch, database) {
   });
 }
 
+/**
+ * @param {object} local database reference
+ */
 export function getDatabaseMeta(localDatabase) {
   return localDatabase.get('meta');
 }
 
+/**
+ * @param {object} database object containing a local and a remote database
+ * @param {object} new question object
+ */
 export function storeQuestionInDatabase(database, newQuestion) {
   const { local, remote } = database;
 
@@ -88,9 +112,17 @@ export function storeQuestionInDatabase(database, newQuestion) {
   .then(() => local.replicate.to(remote));
 }
 
+/**
+ * @param {object} database object containing a local and a remote database
+ * @param {object} new answer object
+ */
 export function storeAnswerInDatabase(database, newAnswer) {
   const { local, remote } = database;
 
   return local.put(newAnswer)
   .then(() => local.replicate.to(remote));
 }
+
+/**
+ * @param {object} database object containing a local and a remote database
+ */

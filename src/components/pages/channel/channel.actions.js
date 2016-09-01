@@ -8,6 +8,11 @@ import {
   storeAnswerInDatabase,
 } from '../../../database/database.actions';
 
+/**
+ * @param {object} contins meta indormation about the channel
+ * @param {string} the channel id
+ * @param {func} dispatch function
+ */
 function setChannelMeta(meta, id, dispatch) {
   return new Promise((resolve) => {
     dispatch({
@@ -22,7 +27,10 @@ function setChannelMeta(meta, id, dispatch) {
   });
 }
 
-function getChannelQuestions(localDatabase) {
+/**
+ * @param {object} Local pouchDB reference
+ */
+function getChannelQuestions(database) {
   return localDatabase.allDocs({
     startkey: 'question@',
     endkey: 'question@\uffff',
@@ -30,6 +38,10 @@ function getChannelQuestions(localDatabase) {
   });
 }
 
+/**
+ * @param {array} Array containing all question objects of the channel
+ * @param {object} Local pouchDB reference
+ */
 function getQuestionAnswers(questions, localDatabase) {
   if (questions.rows <= 0) {
     return new Promise((resolve) => {
@@ -62,6 +74,11 @@ function getQuestionAnswers(questions, localDatabase) {
   ));
 }
 
+/**
+ * @param {func} dispatch function
+ * @param {object} the current state
+ * @param {string} the channel id
+ */
 function setChannelInitialState(dispatch, state, id) {
   const { local } = state.database;
 
@@ -77,6 +94,9 @@ function setChannelInitialState(dispatch, state, id) {
   });
 }
 
+/**
+ * @param {string} channel id
+ */
 export function initializeChannelAction(id) {
   return (dispatch, getState) => {
     setLocalDatabseFromRemote(id)
@@ -87,6 +107,9 @@ export function initializeChannelAction(id) {
   };
 }
 
+/**
+ * @param {object} question to expand or shrink
+ */
 export function toggleQuestion(questionToToggle) {
   return {
     type: 'CHANNEL_TOGGLE_QUESTION',
@@ -97,6 +120,10 @@ export function toggleQuestion(questionToToggle) {
   };
 }
 
+/**
+ * @param {func} dispatch function
+ * @param {object} new question recieved trough change stream
+ */
 function addQuestionFromRemote(dispatch, question) {
   dispatch({
     type: 'CHANNEL_ADD_QUESTION',
@@ -110,8 +137,9 @@ function addQuestionFromRemote(dispatch, question) {
 }
 
 /**
- * TODO: Check if this exists before setting it in state
- * 
+ * @param {func} dispatch function
+ * @param {func} getState function
+ * @param {object} new answer recieved trough change stream
  */
 function addAnswerFromRemote(dispatch, getState, answer) {
   const answerParentQuestionID = answer._id.match(/answer@(.*)@/)[1];
@@ -133,6 +161,10 @@ function addAnswerFromRemote(dispatch, getState, answer) {
   }
 }
 
+/**
+ * @param {func} getState function
+ * @param {string} id of the question to find
+ */
 function getQuestionFromState(getState, questionID) {
   const { channelQuestions } = getState();
 
@@ -186,6 +218,9 @@ export function addNewQuestion() {
   };
 }
 
+/**
+ * @param {object} the parent question that recieved a new answer
+ */
 export function storeQuestionAnswer(targetQuestion) {
   return (dispatch, getState) => {
     if (!getState().database.local) {
@@ -216,13 +251,6 @@ export function storeQuestionAnswer(targetQuestion) {
   };
 }
 
-
-/**
- * 
- * TODO: Need to add a sync handler ref to state and check it to know
- * if we want to start or stop syncing
- * 
- */
 export function toggleLiveChanges() {
   return (dispatch, getState) => {
     const { local, remote } = getState().database;
@@ -267,6 +295,10 @@ export function toggleLiveChanges() {
   }
 }
 
+/**
+ * @param {objetc} Question that owns the input field that should be updated
+ * @param {string} The new input value
+ */
 export function updateQuestionAnswerInput(question, answerInput) {
   return {
     type: 'CHANNEL_UPDATE_QUESTION_ANSWER_INPUT',
@@ -277,6 +309,9 @@ export function updateQuestionAnswerInput(question, answerInput) {
   };
 }
 
+/**
+ * @param {string} The new input value
+ */
 export function updateQuestionInput(payload) {
   return {
     type: 'CHANNEL_UPDATE_INPUT',

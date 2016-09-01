@@ -28,9 +28,6 @@ export default function Home({
         <button type="submit" className="pages-fieldset__form__button" onClick={submitHandler} > Go</button>
         <div className="pages-fieldset__form__error-notification">{error}</div>
       </form>
-      <p className="pages-fieldset__text">
-        {text}
-      </p>
     </fieldset>
   );
 }

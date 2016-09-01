@@ -1,6 +1,7 @@
 .about {
   white-space: pre-line;
-  max-width: 720px;
+  max-width: 980px;
+  min-width: 720px;
   font-size: 1.5rem;
   font-family: 'Inconsolata', monospace;
   margin: 0 auto;

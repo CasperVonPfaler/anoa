@@ -7,45 +7,49 @@ import {
   setLocalDatabseFromRemote,
 } from '../../../database/database.actions';
 
-function dispatchAction(type, payload) {
-  return {
-    type,
-    payload,
-  };
-}
-
 /**
- * Join a channel
- *
  * @Param {func} dispatch function for redux
  * @Param {string} id of the channel to join
  */
 function joinChannel(dispatch, id) {
   if (!id) {
-    dispatch(dispatchAction('HOME_UPDATE_ERROR', 'please enter a channel id.'));
+    dispatch({
+      type: 'HOME_UPDATE_ERROR',
+      payload: 'Please enter a channel id.'
+    });
   } else {
     setLocalDatabseFromRemote(id)
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       browserHistory.push(`/channel/${id}`);
-      dispatch(updateHomeInput(''));
-      dispatch(dispatchAction('HOME_UPDATE_ERROR', ''));
+      dispatch({
+        type: 'HOME_UPDATE_INPUT',
+        payload: ''
+      });
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: ''
+      });
     })
     .catch(() => {
-      dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, please try again.')); //eslint-disable-line
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: 'Unable to join channel, did you maybe mean to create a new one?'
+      });
     });
   }
 }
 
 /**
- * Create a new channel
- *
  * @Param {func} dispatch function for redux
  * @Param {string} name for the new channel
  */
 function newChannel(dispatch, name) {
   if (!name) {
-    dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Please enter a name for the channel.')); //eslint-disable-line
+    dispatch({
+      type: 'HOME_UPDATE_ERROR',
+      payload: 'Please enter a channel name.'
+    });
   } else {
     const id = shortid.generate();
 
@@ -54,20 +58,24 @@ function newChannel(dispatch, name) {
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       browserHistory.push(`/channel/${id}`);
-      dispatch(updateHomeInput(''));
-      dispatch(dispatchAction('HOME_UPDATE_ERROR', ''));
+      dispatch({
+        type: 'HOME_UPDATE_INPUT',
+        payload: ''
+      });
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: ''
+      });
     })
     .catch((err) => {
-      dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, please try again.')); //eslint-disable-line
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: 'Something went wrong, please try again.'
+      });
     });
   }
 }
 
-/**
- * Submit the homescreen form.
- * Determines if a new channel should be created
- * or if should try joining a existing one
- */
 export function submitHomeForm() {
   return (dispatch, getState) => {
     const { homeInput, homeSubmitType } = getState();
@@ -77,19 +85,21 @@ export function submitHomeForm() {
     } else if (homeSubmitType === 'new') {
       newChannel(dispatch, homeInput);
     } else {
-      dispatch(dispatchAction('HOME_UPDATE_ERROR', 'Something has gone horribly wrong, try to reload the page.')); //eslint-disable-line
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: 'Something has gone wrong, please try to reaload the page',
+      });
     }
   };
 }
 
 /**
- * Change between the different submitTypes of the form
- *
  * @Param {string} identifier of the submitType to set as active
  */
 export function toggleSubmitType(newSubmitType) {
   return (dispatch, getState) => {
     const { homeSubmitType } = getState();
+    
     if (homeSubmitType === newSubmitType) {
       return;
     } else if (newSubmitType === 'new' || newSubmitType === 'join') {
@@ -102,14 +112,16 @@ export function toggleSubmitType(newSubmitType) {
         payload: newSubmitType === 'new' ? 'Channel name' : 'Channel id',
       });
     } else {
-      dispatch(dispatchAction('HOME_UPDATE_ERROR','Something has gone horribly wrong, try to reload the page.')); //eslint-disable-line
+      dispatch({
+        type: 'HOME_UPDATE_ERROR',
+        payload: 'Something has gone wrong, please try to reaload the page',
+      });
     }
   };
 }
 
 /**
- * Notifies the store of updates to the input
- * on the home page
+ * @Param {string} new value for the form input field
  */
 export function updateHomeInput(payload) {
   return {
