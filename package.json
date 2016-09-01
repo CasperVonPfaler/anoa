@@ -4,9 +4,9 @@
   "description": "anonymous questions made easy",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node app.js",
+    "start": "node app.js",
     "dev": "node dev.js",
-    "build": "webpack --optimize-minimize"
+    "build": "webpack -p --define process.env.NODE_ENV='\"production\"' --optimize-minimize --progress --colors"
   },
   
   "author": "Casper von pfaler",

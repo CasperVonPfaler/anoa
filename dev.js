@@ -1,17 +1,13 @@
-const webpack = require('webpack');
 const express = require('express');
-const PouchDB = require('pouchdb');
-const memdown = require('memdown');
-const expressPouchDB = require('express-pouchdb');
+const webpack = require('webpack');
 const WebackDevServer = require('webpack-dev-server');
 const Dashboard = require('webpack-dashboard');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const defaultWebpackConfig = require('./webpack.config');
+const testDb = require('./app/test-db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const DB = PouchDB.defaults({ db: memdown });
-const DB_CONFIG = { mode: 'minimumForPouchDB'};
 const dashboard = new Dashboard();
 const devWebpackConfig = Object.assign({}, defaultWebpackConfig, {
   entry: [
@@ -39,7 +35,7 @@ const devServer = new WebackDevServer(webpack(devWebpackConfig), {
 });
 
 app.use(express.static(`${__dirname}/dist`));
-app.use('/db', expressPouchDB(DB, DB_CONFIG));
+app.use('/db', testDb);
 
 app.get('*', (req, res, next) => {
   if (req.accepts('html')) res.sendFile(`${__dirname}/index.html`);
