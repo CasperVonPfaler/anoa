@@ -1,7 +1,8 @@
 .channel {
   margin: 0 auto;
   padding: 0 15rem 0 5rem;
-  max-width: 720px;
+  max-width: 980px;
+  min-width: 720px;
 }
 
 .channel__top-bar {

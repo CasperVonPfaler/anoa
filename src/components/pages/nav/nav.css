@@ -1,5 +1,4 @@
 .nav {
-  width: 5rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -10,7 +9,6 @@
   margin: 0 0 5rem 0;
   color: #0277BD;
   text-align: center;
-  width: 5rem;
   font-size: 1.5rem;
   text-transform: uppercase;
 }

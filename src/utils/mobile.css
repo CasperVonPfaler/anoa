@@ -1,0 +1,30 @@
+
+/* MOBILE */
+@media screen and (max-width: 1000px) {
+  .pages__nav, .pages__content {
+    width: 100%;
+    margin: 5rem 0 0 0;
+    padding: 0;
+    left: 0;
+    position: initial;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: center;
+  }
+
+  .nav > * {
+    margin: 0 1rem;
+  }
+
+  .pages-fieldset, .about, .channel {
+    padding: 0 !important;
+    max-width: 90% !important;
+    min-width: 0 !important;
+  }
+
+  .pages-fieldset__top-buttons__paragraph {
+    text-align: center;
+  }
+}

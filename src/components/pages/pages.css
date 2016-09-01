@@ -3,10 +3,9 @@
 }
 
 .pages__nav {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 5rem;
-  width: 5rem;
   margin: 10rem 0;
   z-index: 10;
 }

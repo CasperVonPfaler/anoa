@@ -17,6 +17,7 @@ import * as navReducers from './components/pages/nav/nav.reducer'
 
 require('./index.css');
 require('./utils/night-mode.css');
+require('./utils/mobile.css');
 
 const reducer = combineReducers(
   Object.assign(
