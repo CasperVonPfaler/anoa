@@ -7,6 +7,20 @@ import {
   setLocalDatabseFromRemote,
 } from '../../../database/database.actions';
 
+function navigateToChannel(dispatch, id) {
+  browserHistory.push(`/channel/${id}`);
+
+  dispatch({
+    type: 'HOME_UPDATE_INPUT',
+    payload: '',
+  });
+
+  dispatch({
+    type: 'HOME_UPDATE_ERROR',
+    payload: '',
+  });
+}
+
 /**
  * @Param {func} dispatch function for redux
  * @Param {string} id of the channel to join
@@ -15,26 +29,18 @@ function joinChannel(dispatch, id) {
   if (!id) {
     dispatch({
       type: 'HOME_UPDATE_ERROR',
-      payload: 'Please enter a channel id.'
+      payload: 'Please enter a channel id.',
     });
   } else {
     setLocalDatabseFromRemote(id)
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
-      browserHistory.push(`/channel/${id}`);
-      dispatch({
-        type: 'HOME_UPDATE_INPUT',
-        payload: ''
-      });
-      dispatch({
-        type: 'HOME_UPDATE_ERROR',
-        payload: ''
-      });
+      navigateToChannel(dispatch, id);
     })
     .catch(() => {
       dispatch({
         type: 'HOME_UPDATE_ERROR',
-        payload: 'Unable to join channel, did you maybe mean to create a new one?'
+        payload: 'Unable to join channel, did you maybe mean to create a new one?',
       });
     });
   }
@@ -48,7 +54,7 @@ function newChannel(dispatch, name) {
   if (!name) {
     dispatch({
       type: 'HOME_UPDATE_ERROR',
-      payload: 'Please enter a channel name.'
+      payload: 'Please enter a channel name.',
     });
   } else {
     const id = shortid.generate();
@@ -57,20 +63,12 @@ function newChannel(dispatch, name) {
     .then((database) => setDatabaseMeta(database, name))
     .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
-      browserHistory.push(`/channel/${id}`);
-      dispatch({
-        type: 'HOME_UPDATE_INPUT',
-        payload: ''
-      });
-      dispatch({
-        type: 'HOME_UPDATE_ERROR',
-        payload: ''
-      });
+      navigateToChannel(dispatch, id);
     })
-    .catch((err) => {
+    .catch(() => {
       dispatch({
         type: 'HOME_UPDATE_ERROR',
-        payload: 'Something went wrong, please try again.'
+        payload: 'Something went wrong, please try again.',
       });
     });
   }
@@ -99,13 +97,13 @@ export function submitHomeForm() {
 export function toggleSubmitType(newSubmitType) {
   return (dispatch, getState) => {
     const { homeSubmitType } = getState();
-    
+
     if (homeSubmitType === newSubmitType) {
       return;
     } else if (newSubmitType === 'new' || newSubmitType === 'join') {
       dispatch({
         type: 'HOME_UPDATE_SUBMITTYPE',
-        payload: newSubmitType
+        payload: newSubmitType,
       });
       dispatch({
         type: 'HOME_UPDATE_INPUTPLACEHOLDER',
@@ -126,7 +124,7 @@ export function toggleSubmitType(newSubmitType) {
 export function updateHomeInput(payload) {
   return {
     type: 'HOME_UPDATE_INPUT',
-    payload
-  }
+    payload,
+  };
 }
 

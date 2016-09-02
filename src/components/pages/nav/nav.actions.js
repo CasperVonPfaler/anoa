@@ -1,12 +1,14 @@
 
+/* globals document */
+
 /**
  * Swap between night and day mode
  */
 export function toggleNightModeAction() {
   return (dispatch, getState) => {
     const { nightMode } = getState();
-    
-    if(!nightMode) {
+
+    if (!nightMode) {
       document.documentElement.className = 'night-mode';
 
       dispatch({
@@ -19,7 +21,7 @@ export function toggleNightModeAction() {
       dispatch({
         type: 'NAV_TOGGLE_NIGHT_MODE',
         payload: false,
-      })
+      });
     }
-  }
+  };
 }

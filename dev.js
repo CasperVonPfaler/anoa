@@ -23,7 +23,7 @@ const devWebpackConfig = Object.assign({}, defaultWebpackConfig, {
     new webpack.HotModuleReplacementPlugin(),
     new DashboardPlugin(dashboard.setData),
   ],
-})
+});
 const devServer = new WebackDevServer(webpack(devWebpackConfig), {
   proxy: {
     '**': `http://localhost:${PORT - 1}`,

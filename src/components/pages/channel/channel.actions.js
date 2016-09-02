@@ -1,9 +1,10 @@
 import shortid from 'shortid';
-import { timeSince } from '../../../utils/util';
 import {
   setDatabaseInState,
   setLocalDatabseFromRemote,
   getDatabaseMeta,
+  getQuestions,
+  getAnswers,
   storeQuestionInDatabase,
   storeAnswerInDatabase,
 } from '../../../database/database.actions';
@@ -27,52 +28,6 @@ function setChannelMeta(meta, id, dispatch) {
   });
 }
 
-/**
- * @param {object} Local pouchDB reference
- */
-function getChannelQuestions(database) {
-  return localDatabase.allDocs({
-    startkey: 'question@',
-    endkey: 'question@\uffff',
-    include_docs: true,
-  });
-}
-
-/**
- * @param {array} Array containing all question objects of the channel
- * @param {object} Local pouchDB reference
- */
-function getQuestionAnswers(questions, localDatabase) {
-  if (questions.rows <= 0) {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
-  }
-
-  return Promise.all(questions.rows.map((questionDoc) => localDatabase.allDocs({
-      startkey: `answer@${questionDoc.doc._id}`,
-      endkey: `answer@${questionDoc.doc._id}\uffff`,
-      include_docs: true,
-    })
-    .then((questionAnswers) => new Promise((resolve) => {
-      if (questionAnswers.rows <= 0) {
-        resolve(Object.assign({}, questionDoc.doc, {
-          answers: [],
-          expanded: false,
-          time: timeSince(Date.parse(questionDoc.doc.time)),
-          answerInput: '',
-        }));
-      } else {
-        resolve(Object.assign({}, questionDoc.doc, {
-          answers: questionAnswers.rows.map((answerDoc) => answerDoc.doc),
-          expanded: false,
-          time: timeSince(Date.parse(questionDoc.doc.time)),
-          answerInput: '',
-        }));
-      }
-    }))
-  ));
-}
 
 /**
  * @param {func} dispatch function
@@ -80,44 +35,18 @@ function getQuestionAnswers(questions, localDatabase) {
  * @param {string} the channel id
  */
 function setChannelInitialState(dispatch, state, id) {
-  const { local } = state.database;
+  const { database } = state;
 
-  getDatabaseMeta(local)
+  getDatabaseMeta(database)
   .then((meta) => setChannelMeta(meta, id, dispatch))
-  .then(() => getChannelQuestions(local))
-  .then((questions) => getQuestionAnswers(questions, local))
+  .then(() => getQuestions(database))
+  .then((questions) => getAnswers(questions, database))
   .then((questionsWithAnswers) => {
     dispatch({
       type: 'CHANNEL_SET_INITIAL_QUESTIONS',
       payload: questionsWithAnswers,
     });
   });
-}
-
-/**
- * @param {string} channel id
- */
-export function initializeChannelAction(id) {
-  return (dispatch, getState) => {
-    setLocalDatabseFromRemote(id)
-    .then((database) => setDatabaseInState(dispatch, database))
-    .then(() => {
-      setChannelInitialState(dispatch, getState(), id);
-    });
-  };
-}
-
-/**
- * @param {object} question to expand or shrink
- */
-export function toggleQuestion(questionToToggle) {
-  return {
-    type: 'CHANNEL_TOGGLE_QUESTION',
-    payload: {
-      questionToToggle,
-      expand: !questionToToggle.expanded,
-    },
-  };
 }
 
 /**
@@ -146,11 +75,6 @@ function addAnswerFromRemote(dispatch, getState, answer) {
   const parentQuestion = getQuestionFromState(getState, answerParentQuestionID);
 
   if (parentQuestion) {
-
-    for( let i = 0; i < parentQuestion.answers; ++i ) {
-      console.log(parentQuestion.answers[i]);
-    }
-
     dispatch({
       type: 'CHANNEL_ADD_ANSWER',
       payload: {
@@ -168,12 +92,38 @@ function addAnswerFromRemote(dispatch, getState, answer) {
 function getQuestionFromState(getState, questionID) {
   const { channelQuestions } = getState();
 
-  for(let i = 0; i < channelQuestions.length; ++i) {
-    if(questionID === channelQuestions[i]._id) {
+  for (let i = 0; i < channelQuestions.length; ++i) {
+    if (questionID === channelQuestions[i]._id) {
       return channelQuestions[i];
     }
   }
   return false;
+}
+
+/**
+ * @param {string} channel id
+ */
+export function initializeChannelAction(id) {
+  return (dispatch, getState) => {
+    setLocalDatabseFromRemote(id)
+    .then((database) => setDatabaseInState(dispatch, database))
+    .then(() => {
+      setChannelInitialState(dispatch, getState(), id);
+    });
+  };
+}
+
+/**
+ * @param {object} question to expand or shrink
+ */
+export function toggleQuestion(questionToToggle) {
+  return {
+    type: 'CHANNEL_TOGGLE_QUESTION',
+    payload: {
+      questionToToggle,
+      expand: !questionToToggle.expanded,
+    },
+  };
 }
 
 export function addNewQuestion() {
@@ -206,13 +156,13 @@ export function addNewQuestion() {
       dispatch(updateQuestionInput(''));
       dispatch({
         type: 'CHANNEL_UPDATE_NOTIFICATION',
-        payload: 'Question stored.'
+        payload: 'Question stored.',
       });
     })
     .catch(() => {
       dispatch({
         type: 'CHANNEL_UPDATE_NOTIFICATION',
-        payload: 'Something went wrong, please try again.'
+        payload: 'Something went wrong, please try again.',
       });
     });
   };
@@ -256,12 +206,11 @@ export function toggleLiveChanges() {
     const { local, remote } = getState().database;
     const { liveChanges } = getState();
 
-    if(!local || !remote) {
+    if (!local || !remote) {
       return;
     }
 
-    if(liveChanges) {
-      console.log('live changes disabled');
+    if (liveChanges) {
       liveChanges.cancel();
       dispatch({
         type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
@@ -270,29 +219,27 @@ export function toggleLiveChanges() {
       return;
     }
 
-    console.log('live changes enabled');  
-
     const liveChangesInstance = local.sync(remote, { live: true, retry: true })
     .on('change', (change) => {
       const newDocs = change.change.docs;
 
       newDocs.forEach((doc) => {
-        if(doc._id.indexOf('answer@') !== -1 && doc._id.indexOf('question@') !== -1 ) { // the doc is an answer
+        if (doc._id.indexOf('answer@') !== -1 && doc._id.indexOf('question@') !== -1) { // the doc is an answer
           addAnswerFromRemote(dispatch, getState, doc);
-        } else if (doc._id.indexOf('question@') !== -1 ) { // The doc is a question 
+        } else if (doc._id.indexOf('question@') !== -1) { // The doc is a question
           addQuestionFromRemote(dispatch, doc);
-        } 
+        }
       });
     })
-    .on('error', (err) => {
-      console.log(err);
+    .on('error', () => {
+      // Do something about live changes error
     });
 
     dispatch({
       type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
       payload: liveChangesInstance,
     });
-  }
+  };
 }
 
 /**

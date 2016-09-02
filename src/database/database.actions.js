@@ -1,5 +1,7 @@
 import PouchDB from 'pouchdb';
+import { timeSince } from '../utils/util';
 
+/* global location */
 const remoteUrl = `${location.protocol}//${location.host}/db/`;
 
 /**
@@ -66,7 +68,7 @@ export function createNewDatabase(id) {
 
 /**
  * @param {object} database object containing a local and a remote database
- * @param {string} channel name to store in the database 
+ * @param {string} channel name to store in the database
  */
 export function setDatabaseMeta(database, name) {
   return database.local.put({
@@ -97,8 +99,8 @@ export function setDatabaseInState(dispatch, database) {
 /**
  * @param {object} local database reference
  */
-export function getDatabaseMeta(localDatabase) {
-  return localDatabase.get('meta');
+export function getDatabaseMeta(database) {
+  return database.local.get('meta');
 }
 
 /**
@@ -125,4 +127,50 @@ export function storeAnswerInDatabase(database, newAnswer) {
 
 /**
  * @param {object} database object containing a local and a remote database
+ * @param {object} new answer object
  */
+export function getQuestions(database) {
+  return database.local.allDocs({
+    startkey: 'question@',
+    endkey: 'question@\uffff',
+    include_docs: true,
+  });
+}
+
+/**
+ * @param {array} Array containing all question objects of the channel
+ * @param {object} Local pouchDB reference
+ */
+export function getAnswers(questions, database) {
+  if (questions.rows <= 0) {
+    return new Promise((resolve) => {
+      resolve([]);
+    });
+  }
+
+  // This is pretty bad to read.. should come up with clearer way
+  return Promise.all(
+    questions.rows.map((questionDoc) => database.local.allDocs({
+      startkey: `answer@${questionDoc.doc._id}`,
+      endkey: `answer@${questionDoc.doc._id}\uffff`,
+      include_docs: true,
+    })
+    .then((questionAnswers) => new Promise((resolve) => {
+      if (questionAnswers.rows <= 0) {
+        resolve(Object.assign({}, questionDoc.doc, {
+          answers: [],
+          expanded: false,
+          time: timeSince(Date.parse(questionDoc.doc.time)),
+          answerInput: '',
+        }));
+      } else {
+        resolve(Object.assign({}, questionDoc.doc, {
+          answers: questionAnswers.rows.map((answerDoc) => answerDoc.doc),
+          expanded: false,
+          time: timeSince(Date.parse(questionDoc.doc.time)),
+          answerInput: '',
+        }));
+      }
+    })))
+  );
+}

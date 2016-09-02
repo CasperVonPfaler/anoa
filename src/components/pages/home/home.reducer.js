@@ -1,37 +1,35 @@
-export const homeInput = (state = '', action) => {
+export function homeInput(state = '', action) {
   switch (action.type) {
     case 'HOME_UPDATE_INPUT':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const homeError = (state = '', action) => {
+export function homeError(state = '', action) {
   switch (action.type) {
     case 'HOME_UPDATE_ERROR':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const homeInputPlaceholder = (state = 'Channel id', action) => {
+export function homeInputPlaceholder(state = 'Channel id', action) {
   switch (action.type) {
     case 'HOME_UPDATE_INPUTPLACEHOLDER':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const homeSubmitType = (state = 'join', action) => {
+export function homeSubmitType(state = 'join', action) {
   switch (action.type) {
     case 'HOME_UPDATE_SUBMITTYPE':
       return action.payload;
     default:
       return state;
   }
-};
-
-export const homeText = (state = '') => state;
+}

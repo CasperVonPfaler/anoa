@@ -1,41 +1,41 @@
-export const channelTitle = (state = '', action) => {
+export function channelTitle(state = '', action) {
   switch (action.type) {
     case 'CHANNEL_SET_TITLE':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const channelID = (state = '', action) => {
+export function channelID(state = '', action) {
   switch (action.type) {
     case 'CHANNEL_SET_ID':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const channelInput = (state = '', action) => {
+export function channelInput(state = '', action) {
   switch (action.type) {
     case 'CHANNEL_UPDATE_INPUT':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const channelNotification = (state = '', action) => {
+export function channelNotification(state = '', action) {
   switch (action.type) {
     case 'CHANNEL_UPDATE_NOTIFICATION':
       return action.payload;
     default:
       return state;
   }
-};
+}
 
-export const liveChanges = (state = false, action) => {
-  switch(action.type) {
+export function liveChanges(state = false, action) {
+  switch (action.type) {
     case 'CHANNEL_TOGGLE_LIVE_CHANGES':
       return action.payload;
     default:
@@ -43,7 +43,7 @@ export const liveChanges = (state = false, action) => {
   }
 }
 
-export const channelQuestions = (state = [], action) => {
+export function channelQuestions(state = [], action) {
   switch (action.type) {
     case 'CHANNEL_SET_INITIAL_QUESTIONS':
       return action.payload;
@@ -62,7 +62,7 @@ export const channelQuestions = (state = [], action) => {
       return channelAddAnswer(
         state,
         action.payload.question,
-        action.payload.answer,
+        action.payload.answer
       );
 
     case 'CHANNEL_UPDATE_QUESTION_ANSWER_INPUT':
@@ -75,14 +75,14 @@ export const channelQuestions = (state = [], action) => {
     default:
       return state;
   }
-};
+}
 
 /**
  * @param {Array} the current questions in state
  * @param {Array} Array with the length 1 contining the new question
  */
 function channelAddQuestion(currentQuestions, newQuestion) {
-  for(let i = 0; i < currentQuestions.length; ++i) {
+  for (let i = 0; i < currentQuestions.length; ++i) {
     if (currentQuestions[i]._id === newQuestion[0]._id) {
       return currentQuestions;
     }
@@ -117,7 +117,7 @@ function channelAddAnswer(currentQuestions, parentQuestion, newAnswer) {
   return currentQuestions.map((question) => {
     if (question._id === parentQuestion._id) {
       // Check that the answer is not already stored in state
-      for(let i = 0; i < question.answers.length; ++i) {
+      for (let i = 0; i < question.answers.length; ++i) {
         if (question.answers[i]._id === newAnswer[0]._id) {
           return question;
         }
