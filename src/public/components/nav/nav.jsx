@@ -7,9 +7,7 @@ require('./nav.css');
 export default function Nav(props) {
   return (
     <ul className="nav">
-      <h4 className="nav-heading">ANOA</h4>
-      <li className="nav-item"><IndexLink to="/" className="nav-item__link" activeClassName="nav-item__link--active">Home</IndexLink></li>
-      <li className="nav-item"><Link to="/about" className="nav-item__link" activeClassName="nav-item__link--active">About</Link></li>
+      <h4 className="nav-heading"><IndexLink to="/" className="nav-item__link" activeClassName="nav-item__link--active">ANOA</IndexLink></h4>
       <li className="nav-item nav-item__icon" onClick={props.toggleNightMode} >
         <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
           <path d="M0 0h24v24H0z" fill="none"/>

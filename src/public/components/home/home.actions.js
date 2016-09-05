@@ -4,8 +4,9 @@ import {
   createNewDatabase,
   setDatabaseMeta,
   setDatabaseInState,
-  setLocalDatabseFromRemote,
-} from '../../../database/database.actions';
+  useExistingDatabase,
+  checkForRemoteDatabase,
+} from '../../database/database.actions';
 
 function navigateToChannel(dispatch, id) {
   browserHistory.push(`/channel/${id}`);
@@ -18,6 +19,11 @@ function navigateToChannel(dispatch, id) {
   dispatch({
     type: 'HOME_UPDATE_ERROR',
     payload: '',
+  });
+
+  dispatch({
+    type: 'HOME_UPDATE_LOADING',
+    payload: false,
   });
 }
 
@@ -32,15 +38,15 @@ function joinChannel(dispatch, id) {
       payload: 'Please enter a channel id.',
     });
   } else {
-    setLocalDatabseFromRemote(id)
-    .then((database) => setDatabaseInState(dispatch, database))
+    useExistingDatabase(id)
+    .then((database) => checkForRemoteDatabase(database))
     .then(() => {
       navigateToChannel(dispatch, id);
     })
     .catch(() => {
       dispatch({
         type: 'HOME_UPDATE_ERROR',
-        payload: 'Unable to join channel, did you maybe mean to create a new one?',
+        payload: 'Channel not found, did you mean to create a new one?',
       });
     });
   }
@@ -57,6 +63,11 @@ function newChannel(dispatch, name) {
       payload: 'Please enter a channel name.',
     });
   } else {
+    dispatch({
+      type: 'HOME_UPDATE_LOADING',
+      payload: true,
+    });
+
     const id = shortid.generate();
 
     createNewDatabase(id)
@@ -69,6 +80,10 @@ function newChannel(dispatch, name) {
       dispatch({
         type: 'HOME_UPDATE_ERROR',
         payload: 'Something went wrong, please try again.',
+      });
+      dispatch({
+        type: 'HOME_UPDATE_LOADING',
+        payload: false,
       });
     });
   }

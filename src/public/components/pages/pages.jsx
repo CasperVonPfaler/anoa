@@ -1,5 +1,5 @@
 import React from 'react';
-import NavContainer from './nav/nav.container';
+import NavContainer from '../nav/nav.container';
 
 require('./pages.css');
 

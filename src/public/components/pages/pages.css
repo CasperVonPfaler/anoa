@@ -87,3 +87,21 @@
   font-family: 'Inconsolata', monospace;
 }
 
+.pages-fieldset__loading {
+  display: none;
+  margin:  0 auto 1rem auto;
+  animation: spinner 1.5s infinite;
+}
+
+.pages-fieldset__loading--visible {
+  display: block;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

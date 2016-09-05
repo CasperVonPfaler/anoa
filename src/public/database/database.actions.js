@@ -5,49 +5,44 @@ import { timeSince } from '../utils/util';
 const remoteUrl = `${location.protocol}//${location.host}/db/`;
 
 /**
- * @param {string} id of the database
+ * @param {sting} id of the database
  */
-export function setLocalDatabseFromRemote(id) {
-  const database = {
-    local: new PouchDB(id),
-    remote: new PouchDB(
-      `${remoteUrl}${id}`,
-      { skip_setup: true }
-    ),
+export function useExistingDatabase(id) {
+  const config = {
+    skip_setup: true,
   };
 
+  const database = {
+    local: new PouchDB(id),
+    remote: new PouchDB(`${remoteUrl}${id}`, config),
+  };
+
+  return Promise.resolve(database);
+}
+
+export function checkForRemoteDatabase(database) {
+  const { remote } = database;
+
   return new Promise((resolve, reject) => {
-    database.remote.info()
-    .then(() => database.local.replicate.from(database.remote))
+    remote.info()
     .then(() => {
       resolve(database);
     })
     .catch(() => {
-      reject('no remote database');
+      reject(database);
     });
   });
 }
 
-/**
- * @param {string} id of the database
- */
-export function setLocalDatabaseFromLocal(id) {
-  const database = {
-    local: new PouchDB(id, { skip_setup: true }),
-    remote: new PouchDB(
-      `${remoteUrl}${id}`,
-       { skip_setup: true }
-    ),
-  };
-
+export function replicateFromRemoteDatabase(database) {
+  const { local, remote } = database; 
   return new Promise((resolve, reject) => {
-    database.local.info()
+    local.replicate.from(remote)
     .then(() => {
       resolve(database);
     })
     .catch(() => {
-      database.local.destory();
-      reject('no local database');
+      reject(database);
     });
   });
 }
@@ -61,9 +56,7 @@ export function createNewDatabase(id) {
     remote: new PouchDB(`${remoteUrl}${id}`),
   };
 
-  return new Promise((resolve) => {
-    resolve(database);
-  });
+  return Promise.resolve(database);
 }
 
 /**
@@ -92,7 +85,7 @@ export function setDatabaseInState(dispatch, database) {
       type: 'DATABASE_SET',
       payload: database,
     });
-    resolve();
+    resolve(database);
   });
 }
 

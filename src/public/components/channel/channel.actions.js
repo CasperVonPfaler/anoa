@@ -1,13 +1,15 @@
 import shortid from 'shortid';
 import {
   setDatabaseInState,
-  setLocalDatabseFromRemote,
   getDatabaseMeta,
   getQuestions,
   getAnswers,
   storeQuestionInDatabase,
   storeAnswerInDatabase,
-} from '../../../database/database.actions';
+  useExistingDatabase,
+  checkForRemoteDatabase,
+  replicateFromRemoteDatabase,
+} from '../../database/database.actions';
 
 /**
  * @param {object} contins meta indormation about the channel
@@ -34,17 +36,21 @@ function setChannelMeta(meta, id, dispatch) {
  * @param {object} the current state
  * @param {string} the channel id
  */
-function setChannelInitialState(dispatch, state, id) {
-  const { database } = state;
-
-  getDatabaseMeta(database)
-  .then((meta) => setChannelMeta(meta, id, dispatch))
-  .then(() => getQuestions(database))
-  .then((questions) => getAnswers(questions, database))
-  .then((questionsWithAnswers) => {
-    dispatch({
-      type: 'CHANNEL_SET_INITIAL_QUESTIONS',
-      payload: questionsWithAnswers,
+function refreshChannelState(dispatch, database, id) {
+  return new Promise((resolve, reject) => {
+    getDatabaseMeta(database)
+    .then((meta) => setChannelMeta(meta, id, dispatch))
+    .then(() => getQuestions(database))
+    .then((questions) => getAnswers(questions, database))
+    .then((questionsWithAnswers) => {
+      dispatch({
+        type: 'CHANNEL_SET_INITIAL_QUESTIONS',
+        payload: questionsWithAnswers,
+      });
+      resolve(database);
+    })
+    .catch((err) => {
+      reject(database);
     });
   });
 }
@@ -104,11 +110,17 @@ function getQuestionFromState(getState, questionID) {
  * @param {string} channel id
  */
 export function initializeChannelAction(id) {
-  return (dispatch, getState) => {
-    setLocalDatabseFromRemote(id)
+  return (dispatch) => {
+    useExistingDatabase(id)
     .then((database) => setDatabaseInState(dispatch, database))
-    .then(() => {
-      setChannelInitialState(dispatch, getState(), id);
+    .then((database) => refreshChannelState(dispatch, database, id))
+    .catch((database) => {
+      checkForRemoteDatabase(database)
+      .then(() => replicateFromRemoteDatabase(database))
+      .then(() => refreshChannelState(dispatch, database, id))
+      .catch(() => {
+        // Oh noes
+      });
     });
   };
 }

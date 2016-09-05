@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import Answer from './answer/answer.jsx';
+import Answer from '../answer/answer.jsx';
 
 require('./question.css');
 
@@ -9,7 +9,6 @@ export default function Question({
   answers,
   time,
   expand,
-  shrink,
   expanded,
   answerInputWatcher,
   answerInput,
@@ -18,7 +17,7 @@ export default function Question({
   return (
     <li className="question">
       <div className="question__text" onClick={expand}>
-        <span className={classNames('question__title', { 'question__title--active' : expanded })}>{text}</span>
+        <span className={classNames('question__title', { 'question__title--active': expanded })}>{text}</span>
         <div className="question__meta">
           <span className="question__meta__answers-count">
             Answers:<span className="question__meta__answers-count__number">{answers.length}</span>

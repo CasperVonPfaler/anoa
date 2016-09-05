@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "node dev.js",
-    "build": "webpack -p --define process.env.NODE_ENV='\"production\"' --optimize-minimize --progress --colors"
+    "dev": "NODE_ENV=development node dev.js",
+    "build": "NODE_ENV=production webpack -p  --progress --colors"
   },
   
   "author": "Casper von pfaler",

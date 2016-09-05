@@ -33,3 +33,12 @@ export function homeSubmitType(state = 'join', action) {
       return state;
   }
 }
+
+export function homeLoading(state = false, action) {
+  switch (action.type) {
+    case 'HOME_UPDATE_LOADING':
+      return action.payload;
+    default:
+      return state;
+  }
+}
