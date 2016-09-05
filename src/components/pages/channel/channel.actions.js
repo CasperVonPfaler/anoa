@@ -1,10 +1,12 @@
 import shortid from 'shortid';
 import {
   setDatabaseInState,
-  setLocalDatabseFromRemote,
+  initializeDatabase,
   getDatabaseMeta,
   getQuestions,
   getAnswers,
+  syncData,
+  getRemoteDatabaseCredentials,
   storeQuestionInDatabase,
   storeAnswerInDatabase,
 } from '../../../database/database.actions';
@@ -28,26 +30,19 @@ function setChannelMeta(meta, id, dispatch) {
   });
 }
 
+function setChannelQuestions(dispatch, questions) {
+  dispatch({
+    type: 'CHANNEL_SET_INITIAL_QUESTIONS',
+    payload: questions,
+  });
+}
+
 
 /**
  * @param {func} dispatch function
  * @param {object} the current state
  * @param {string} the channel id
  */
-function setChannelInitialState(dispatch, state, id) {
-  const { database } = state;
-
-  getDatabaseMeta(database)
-  .then((meta) => setChannelMeta(meta, id, dispatch))
-  .then(() => getQuestions(database))
-  .then((questions) => getAnswers(questions, database))
-  .then((questionsWithAnswers) => {
-    dispatch({
-      type: 'CHANNEL_SET_INITIAL_QUESTIONS',
-      payload: questionsWithAnswers,
-    });
-  });
-}
 
 /**
  * @param {func} dispatch function
@@ -100,15 +95,37 @@ function getQuestionFromState(getState, questionID) {
   return false;
 }
 
+
 /**
  * @param {string} channel id
  */
 export function initializeChannelAction(id) {
-  return (dispatch, getState) => {
-    setLocalDatabseFromRemote(id)
+  return (dispatch) => {
+    // Set initial state from local database if there is one
+    initializeDatabase(id)
     .then((database) => setDatabaseInState(dispatch, database))
-    .then(() => {
-      setChannelInitialState(dispatch, getState(), id);
+    .then((database) => {
+      getDatabaseMeta(database)
+      .then((meta) => setChannelMeta(meta, id, dispatch))
+      .then(() => getQuestions(database))
+      .then((questions) => getAnswers(questions, database))
+      .then((questionsWithAnswers) => setChannelQuestions(dispatch, questionsWithAnswers))
+      .catch(() => {
+        console.log('no local databse found');
+      });
+    });
+    
+    // Get data from remote database and update state
+    getRemoteDatabaseCredentials(id)
+    .then((credentials) => initializeDatabase(id, credentials))
+    .then((database) => syncData(database))
+    .then((database) => setDatabaseInState(dispatch, database))
+    .then((database) => {
+      getDatabaseMeta(database)
+      .then((meta) => setChannelMeta(meta, id, dispatch))
+      .then(() => getQuestions(database))
+      .then((questions) => getAnswers(questions, database))
+      .then((questionsWithAnswers) => setChannelQuestions(dispatch, questionsWithAnswers));
     });
   };
 }
@@ -142,23 +159,22 @@ export function addNewQuestion() {
       time: new Date(),
     };
 
+    dispatch({
+      type: 'CHANNEL_ADD_QUESTION',
+      payload: [].concat(Object.assign({}, newQuestion, {
+        expanded: false,
+        answers: [],
+        time: '0 seconds ago',
+        answerInput: '',
+      })),
+    });
+    dispatch(updateQuestionInput(''));
+    dispatch({
+      type: 'CHANNEL_UPDATE_NOTIFICATION',
+      payload: 'Question stored.',
+    });
+
     storeQuestionInDatabase(getState().database, newQuestion)
-    .then(() => {
-      dispatch({
-        type: 'CHANNEL_ADD_QUESTION',
-        payload: [].concat(Object.assign({}, newQuestion, {
-          expanded: false,
-          answers: [],
-          time: '0 seconds ago',
-          answerInput: '',
-        })),
-      });
-      dispatch(updateQuestionInput(''));
-      dispatch({
-        type: 'CHANNEL_UPDATE_NOTIFICATION',
-        payload: 'Question stored.',
-      });
-    })
     .catch(() => {
       dispatch({
         type: 'CHANNEL_UPDATE_NOTIFICATION',
@@ -187,17 +203,16 @@ export function storeQuestionAnswer(targetQuestion) {
       time: new Date(),
     };
 
-    storeAnswerInDatabase(getState().database, newAnswer)
-    .then(() => {
-      dispatch({
-        type: 'CHANNEL_ADD_ANSWER',
-        payload: {
-          question: targetQuestion,
-          answer: [newAnswer],
-        },
-      });
-      dispatch(updateQuestionAnswerInput(targetQuestion, ''));
+    dispatch({
+      type: 'CHANNEL_ADD_ANSWER',
+      payload: {
+        question: targetQuestion,
+        answer: [newAnswer],
+      },
     });
+    dispatch(updateQuestionAnswerInput(targetQuestion, ''));
+
+    storeAnswerInDatabase(getState().database, newAnswer);
   };
 }
 

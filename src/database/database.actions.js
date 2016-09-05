@@ -1,68 +1,62 @@
 import PouchDB from 'pouchdb';
+import request from 'superagent';
 import { timeSince } from '../utils/util';
 
-/* global location */
-const remoteUrl = `${location.protocol}//${location.host}/db/`;
-
 /**
  * @param {string} id of the database
+ * @return {promise} that resolves to the remote database credentials
  */
-export function setLocalDatabseFromRemote(id) {
-  const database = {
-    local: new PouchDB(id),
-    remote: new PouchDB(
-      `${remoteUrl}${id}`,
-      { skip_setup: true }
-    ),
-  };
-
+export function createRemoteDatabase(id) {
   return new Promise((resolve, reject) => {
-    database.remote.info()
-    .then(() => database.local.replicate.from(database.remote))
-    .then(() => {
-      resolve(database);
-    })
-    .catch(() => {
-      reject('no remote database');
+    request
+    .post('/api/createDatabase')
+    .send({ id })
+    .end((err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res.body);
+      }
     });
   });
 }
 
 /**
  * @param {string} id of the database
+ * @return {promise} that resolves to the remote database credentials
  */
-export function setLocalDatabaseFromLocal(id) {
-  const database = {
-    local: new PouchDB(id, { skip_setup: true }),
-    remote: new PouchDB(
-      `${remoteUrl}${id}`,
-       { skip_setup: true }
-    ),
-  };
-
+export function getRemoteDatabaseCredentials(id) {
   return new Promise((resolve, reject) => {
-    database.local.info()
-    .then(() => {
-      resolve(database);
-    })
-    .catch(() => {
-      database.local.destory();
-      reject('no local database');
+    request
+    .get(`/api/getDatabaseCredentials/${id}`)
+    .end((err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res.body);
+      }
     });
   });
 }
 
-/**
- * @param {sting} id of the database
- */
-export function createNewDatabase(id) {
+export function initializeDatabase(id, credentials) {
   const database = {
     local: new PouchDB(id),
-    remote: new PouchDB(`${remoteUrl}${id}`),
+    remote: credentials ? new PouchDB(`https://${credentials.key}:${credentials.pass}@anoa.cloudant.com/${id}`) : null,
   };
 
-  return new Promise((resolve) => {
-    resolve(database);
+  return Promise.resolve(database);
+}
+
+export function syncData(database) {
+  return new Promise((resolve, reject) => {
+    database.local.sync(database.remote)
+    .then(() => {
+      resolve(database);
+    })
+    .catch((err) => {
+      reject(err);
+    });
   });
 }
 
@@ -76,10 +70,7 @@ export function setDatabaseMeta(database, name) {
     name,
     time: new Date(),
   })
-  .then(() => database.local.replicate.to(database.remote))
-  .then(() => new Promise((resolve) => {
-    resolve(database);
-  }));
+  .then(() => Promise.resolve(database));
 }
 
 /**
@@ -92,7 +83,7 @@ export function setDatabaseInState(dispatch, database) {
       type: 'DATABASE_SET',
       payload: database,
     });
-    resolve();
+    resolve(database);
   });
 }
 

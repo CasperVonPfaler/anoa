@@ -1,10 +1,9 @@
 import shortid from 'shortid';
 import { browserHistory } from 'react-router';
 import {
-  createNewDatabase,
+  createRemoteDatabase,
   setDatabaseMeta,
-  setDatabaseInState,
-  setLocalDatabseFromRemote,
+  initializeDatabase,
 } from '../../../database/database.actions';
 
 function navigateToChannel(dispatch, id) {
@@ -19,6 +18,11 @@ function navigateToChannel(dispatch, id) {
     type: 'HOME_UPDATE_ERROR',
     payload: '',
   });
+
+  dispatch({
+    type: 'HOME_UPDATE_LOADING',
+    payload: false,
+  });
 }
 
 /**
@@ -32,17 +36,7 @@ function joinChannel(dispatch, id) {
       payload: 'Please enter a channel id.',
     });
   } else {
-    setLocalDatabseFromRemote(id)
-    .then((database) => setDatabaseInState(dispatch, database))
-    .then(() => {
-      navigateToChannel(dispatch, id);
-    })
-    .catch(() => {
-      dispatch({
-        type: 'HOME_UPDATE_ERROR',
-        payload: 'Unable to join channel, did you maybe mean to create a new one?',
-      });
-    });
+    navigateToChannel(dispatch, id);
   }
 }
 
@@ -57,11 +51,16 @@ function newChannel(dispatch, name) {
       payload: 'Please enter a channel name.',
     });
   } else {
-    const id = shortid.generate();
+    dispatch({
+      type: 'HOME_UPDATE_LOADING',
+      payload: true,
+    });
+    // cloudant only accepts lowercase letters and requires starting with a letter
+    const id = `a${shortid.generate().toLowerCase()}`;
 
-    createNewDatabase(id)
+    createRemoteDatabase(id)
+    .then((credentials) => initializeDatabase(id, credentials))
     .then((database) => setDatabaseMeta(database, name))
-    .then((database) => setDatabaseInState(dispatch, database))
     .then(() => {
       navigateToChannel(dispatch, id);
     })
@@ -69,6 +68,10 @@ function newChannel(dispatch, name) {
       dispatch({
         type: 'HOME_UPDATE_ERROR',
         payload: 'Something went wrong, please try again.',
+      });
+      dispatch({
+        type: 'HOME_UPDATE_LOADING',
+        payload: false,
       });
     });
   }

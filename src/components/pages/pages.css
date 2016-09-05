@@ -62,6 +62,10 @@
   color: #000;
 }
 
+.pages-fieldset__form__button--hidden {
+  display: none;
+}
+
 .pages-fieldset__top-buttons__button {
   margin: 5rem 1rem 2.5rem 1rem;
   color: rgba(2, 119, 189, .5);
@@ -87,3 +91,21 @@
   font-family: 'Inconsolata', monospace;
 }
 
+.pages-fieldset__loading {
+  display: none;
+  margin:  0 auto 1rem auto;
+  animation: spinner 1.5s infinite;
+}
+
+.pages-fieldset__loading--visible {
+  display: block;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

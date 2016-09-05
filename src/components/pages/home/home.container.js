@@ -11,6 +11,7 @@ const mapStateToProps = (state) => ({
   inputPlaceholder: state.homeInputPlaceholder,
   text: state.homeText,
   input: state.homeInput,
+  loading: state.homeLoading,
   submitType: state.homeSubmitType,
 });
 

@@ -1,10 +1,45 @@
 const webpack = require('webpack');
+const Dashboard = require('webpack-dashboard');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 
-module.exports = {
-  entry: [
+const PROD = process.env.NODE_ENV === 'production';
+
+function choosePlugins(production) {
+  if (!production) {
+    const dashboard = new Dashboard();
+    return [
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      }),
+      new webpack.HotModuleReplacementPlugin(),
+      new DashboardPlugin(dashboard.setData),
+    ];
+  }
+  return [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    }),
+  ];
+}
+
+function chooseEntry(production) {
+  if (!production) {
+    return [
+      'babel-polyfill',
+      'webpack/hot/only-dev-server',
+      'webpack-dev-server/client?http://localhost:5001',
+      `${__dirname}/src/index.jsx`,
+    ];
+  }
+  return [
     'babel-polyfill',
     `${__dirname}/src/index.jsx`,
-  ],
+  ];
+}
+
+
+module.exports = {
+  entry: chooseEntry(PROD),
   output: {
     path: `${__dirname}/dist`,
     filename: 'index.js',
@@ -35,9 +70,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    }),
-  ],
+  plugins: choosePlugins(PROD),
 };

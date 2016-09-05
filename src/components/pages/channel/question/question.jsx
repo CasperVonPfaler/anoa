@@ -21,7 +21,7 @@ export default function Question({
         <span className={classNames('question__title', { 'question__title--active' : expanded })}>{text}</span>
         <div className="question__meta">
           <span className="question__meta__answers-count">
-            Answers:<span className="question__meta__answers-count__number">{answers.length}</span>
+            Answers:<span className="question__meta__answers-count__number"> {answers.length}</span>
           </span>
           <span className="question__meta__time">{time}</span>
         </div>
