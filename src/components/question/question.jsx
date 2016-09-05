@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import Answer from './answer/answer.jsx';
+import Answer from '../answer/answer.jsx';
 
 require('./question.css');
 

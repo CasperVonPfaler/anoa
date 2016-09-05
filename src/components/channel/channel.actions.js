@@ -9,7 +9,7 @@ import {
   getRemoteDatabaseCredentials,
   storeQuestionInDatabase,
   storeAnswerInDatabase,
-} from '../../../database/database.actions';
+} from '../../database/database.actions';
 
 /**
  * @param {object} contins meta indormation about the channel
@@ -36,13 +36,6 @@ function setChannelQuestions(dispatch, questions) {
     payload: questions,
   });
 }
-
-
-/**
- * @param {func} dispatch function
- * @param {object} the current state
- * @param {string} the channel id
- */
 
 /**
  * @param {func} dispatch function
@@ -114,7 +107,7 @@ export function initializeChannelAction(id) {
         console.log('no local databse found');
       });
     });
-    
+
     // Get data from remote database and update state
     getRemoteDatabaseCredentials(id)
     .then((credentials) => initializeDatabase(id, credentials))

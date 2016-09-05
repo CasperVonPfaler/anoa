@@ -16,6 +16,7 @@ function createNewDatabase(id) {
       if (err) {
         reject(err);
       } else {
+        console.log('database created');
         resolve();
       }
     });

@@ -4,7 +4,7 @@ import {
   createRemoteDatabase,
   setDatabaseMeta,
   initializeDatabase,
-} from '../../../database/database.actions';
+} from '../../database/database.actions';
 
 function navigateToChannel(dispatch, id) {
   browserHistory.push(`/channel/${id}`);

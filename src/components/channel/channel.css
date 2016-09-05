@@ -5,6 +5,14 @@
   min-width: 720px;
 }
 
+.channel--loading {
+  display: none;
+}
+
+.channel-spinner {
+  
+}
+
 .channel__top-bar {
   margin: 0 0 1.5rem 0;
   font-family: 'Roboto', sans-serif;

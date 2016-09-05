@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import Question from './question/question.jsx';
+import Question from '../question/question.jsx';
 
 require('./channel.css');
 

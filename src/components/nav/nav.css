@@ -39,6 +39,7 @@
 }
 
 .nav-item__icon {
+  display: none;
   fill: #000;
   margin-top: 5rem;
   cursor: pointer;
