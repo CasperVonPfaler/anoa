@@ -146,3 +146,12 @@ function channelUpdateQuestionAnswerInput(currentQuestions, targetQuestion, newA
   });
 }
 
+export function channelExists(state = false, action) {
+  switch (action.type) {
+    case 'CHANNEL_EXISTS':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+

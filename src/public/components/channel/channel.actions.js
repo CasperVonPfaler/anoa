@@ -114,12 +114,27 @@ export function initializeChannelAction(id) {
     useExistingDatabase(id)
     .then((database) => setDatabaseInState(dispatch, database))
     .then((database) => refreshChannelState(dispatch, database, id))
+    .then(() => {
+      dispatch({
+        type: 'CHANNEL_EXISTS',
+        payload: true
+      });
+    })
     .catch((database) => {
       checkForRemoteDatabase(database)
       .then(() => replicateFromRemoteDatabase(database))
       .then(() => refreshChannelState(dispatch, database, id))
-      .catch(() => {
-        // Oh noes
+      .then(() => {
+        dispatch({
+          type: 'CHANNEL_EXISTS',
+          payload: true
+        });
+      })
+      .catch(() => { 
+        dispatch({
+          type: 'CHANNEL_EXISTS',
+          payload: false
+        });
       });
     });
   };

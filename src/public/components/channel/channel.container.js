@@ -11,6 +11,7 @@ import {
    } from './channel.actions';
 
 const mapStateToProps = (state) => ({
+  exists: state.channelExists,
   title: state.channelTitle,
   id: state.channelID,
   live: state.liveChanges,

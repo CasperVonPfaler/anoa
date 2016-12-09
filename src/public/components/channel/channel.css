@@ -107,11 +107,14 @@
   list-style: none;
 }
 
-.channel__no-questions {
+.channel__no-questions, .channel__no-exists {
   font-size: 2rem;
   text-align: center;
   font-family: 'Inconsolata', monospace;
-  
+}
+
+.channel__no-exists > a {
+  color: #0277BD;
 }
 
 
