@@ -15,6 +15,7 @@ const mapStateToProps = (state) => ({
   title: state.channelTitle,
   id: state.channelID,
   live: state.liveChanges,
+  liveChangesError: state.liveChangesError,
   input: state.channelInput,
   notification: state.channelNotification,
   questions: state.channelQuestions,

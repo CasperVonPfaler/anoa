@@ -14,6 +14,11 @@ export default class Channel extends Component {
     return (
       <div>
         {
+          this.props.liveChangesError
+          ? <div className="channel__live-changes-error">{this.props.liveChangesError}</div>
+          : null
+        }
+        {
           this.props.exists
           ? <div className="channel">
               <div className="channel__top-bar">

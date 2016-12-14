@@ -110,7 +110,7 @@ function getQuestionFromState(getState, questionID) {
  * @param {string} channel id
  */
 export function initializeChannelAction(id) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     useExistingDatabase(id)
     .then((database) => setDatabaseInState(dispatch, database))
     .then((database) => refreshChannelState(dispatch, database, id))
@@ -119,6 +119,7 @@ export function initializeChannelAction(id) {
         type: 'CHANNEL_EXISTS',
         payload: true
       });
+      disableLiveChanges(dispatch, getState().liveChanges);
     })
     .catch((database) => {
       checkForRemoteDatabase(database)
@@ -135,6 +136,7 @@ export function initializeChannelAction(id) {
           type: 'CHANNEL_EXISTS',
           payload: false
         });
+        disableLiveChanges(dispatch, getState().liveChanges);
       });
     });
   };
@@ -228,28 +230,43 @@ export function storeQuestionAnswer(targetQuestion) {
   };
 }
 
+/**
+ * @param {func} dispatch function
+ * @param {object} the current state
+ * @return {bool} if changes were disabled
+ */
+export function disableLiveChanges(dispatch, liveChanges) {
+  if(liveChanges) {
+    liveChanges.cancel();
+    dispatch({
+      type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
+      payload: false,
+    });
+    dispatch({
+      type: 'CHANNEL_SET_LIVE_CHANGES_ERROR',
+      payload: false,
+    });
+    return true;
+  }
+  return false;
+}
+
 export function toggleLiveChanges() {
   return (dispatch, getState) => {
     const { local, remote } = getState().database;
-    const { liveChanges } = getState();
+    const { liveChanges, liveChangesError } = getState();
 
     if (!local || !remote) {
       return;
     }
 
-    if (liveChanges) {
-      liveChanges.cancel();
-      dispatch({
-        type: 'CHANNEL_TOGGLE_LIVE_CHANGES',
-        payload: false,
-      });
+    if (disableLiveChanges(dispatch, liveChanges)) {
       return;
     }
 
     const liveChangesInstance = local.sync(remote, { live: true, retry: true })
     .on('change', (change) => {
       const newDocs = change.change.docs;
-
       newDocs.forEach((doc) => {
         if (doc._id.indexOf('answer@') !== -1 && doc._id.indexOf('question@') !== -1) { // the doc is an answer
           addAnswerFromRemote(dispatch, getState, doc);
@@ -258,8 +275,32 @@ export function toggleLiveChanges() {
         }
       });
     })
-    .on('error', () => {
-      // Do something about live changes error
+    .on('active', () => {
+      const { liveChangesError } = getState();
+      if(liveChangesError) {
+        dispatch({
+          type: 'CHANNEL_SET_LIVE_CHANGES_ERROR',
+          payload: false,
+        });
+      }
+    })
+    .on('paused', () => {
+      const { liveChangesError } = getState();
+      if(!navigator.onLine && !liveChangesError) {
+        dispatch({
+          type: 'CHANNEL_SET_LIVE_CHANGES_ERROR',
+          payload: 'Live changes have been stopped due to a connection error. Trying to reconnect...',
+        });
+      }
+    })
+    .on('error', (err) => {
+      const { liveChangesError } = getState();
+      if(!liveChangesError) {
+        dispatch({
+          type: 'CHANNEL_SET_LIVE_CHANGES_ERROR',
+          payload: 'Live changes have been stopped due to an unrecoverable error. Please try to reload the page.',
+        });
+      }
     });
 
     dispatch({

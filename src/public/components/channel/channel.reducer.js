@@ -43,6 +43,15 @@ export function liveChanges(state = false, action) {
   }
 }
 
+export function liveChangesError(state = false, action) {
+  switch (action.type) {
+    case 'CHANNEL_SET_LIVE_CHANGES_ERROR':
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 export function channelQuestions(state = [], action) {
   switch (action.type) {
     case 'CHANNEL_SET_INITIAL_QUESTIONS':
